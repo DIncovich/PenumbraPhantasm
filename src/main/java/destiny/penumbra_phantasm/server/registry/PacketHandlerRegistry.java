@@ -145,5 +145,17 @@ public class PacketHandlerRegistry {
                 .decoder(ClientBoundSoulSyncPacket::decode)
                 .consumerMainThread(ClientBoundSoulSyncPacket::handle)
                 .add();
+
+        INSTANCE.messageBuilder(ClientBoundTextBoxPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(ClientBoundTextBoxPacket::encode)
+                .decoder(ClientBoundTextBoxPacket::new)
+                .consumerMainThread(ClientBoundTextBoxPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(ServerBoundTextBoxPacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(ServerBoundTextBoxPacket::encode)
+                .decoder(ServerBoundTextBoxPacket::new)
+                .consumerMainThread(ServerBoundTextBoxPacket::handle)
+                .add();
     }
 }

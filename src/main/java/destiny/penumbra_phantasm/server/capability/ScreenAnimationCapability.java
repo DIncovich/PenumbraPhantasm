@@ -6,6 +6,7 @@ import destiny.penumbra_phantasm.server.fountain.DarkFountain;
 import destiny.penumbra_phantasm.client.network.ClientBoundAnimationPacket;
 import destiny.penumbra_phantasm.server.registry.CapabilityRegistry;
 import destiny.penumbra_phantasm.server.registry.PacketHandlerRegistry;
+import destiny.penumbra_phantasm.server.egg.EggRoomUtil;
 import destiny.penumbra_phantasm.server.util.DarkWorldUtil;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -56,7 +57,7 @@ public class ScreenAnimationCapability implements INBTSerializable<CompoundTag> 
         {
             AtomicBoolean hasFountain = new AtomicBoolean(false);
             serverPlayer.level().getCapability(CapabilityRegistry.DARK_FOUNTAIN).ifPresent(cap -> hasFountain.set(!cap.darkFountains.isEmpty()));
-            if(DarkWorldUtil.isDarkWorldKey(serverPlayer.level().dimension()) && !hasFountain.get())
+            if(DarkWorldUtil.isDarkWorldKey(serverPlayer.level().dimension()) && !EggRoomUtil.isEggRoomKey(serverPlayer.level().dimension()) && !hasFountain.get())
             {
                 ServerLevel targetLevel = serverPlayer.getServer().getLevel(serverPlayer.getRespawnDimension());
                 BlockPos pos = serverPlayer.getRespawnPosition();
@@ -107,7 +108,10 @@ public class ScreenAnimationCapability implements INBTSerializable<CompoundTag> 
             }
         }
 
-        if (!previousLocation.equals(currentLocation)) {
+        if (EggRoomUtil.isEggRoom(level)) {
+            previousLocation = currentLocation;
+            titleAlphaTicker = -1;
+        } else if (!previousLocation.equals(currentLocation)) {
             boolean darkWorldLandFinished = darknessLandTicker < 0 || darknessLandTicker >= 20;
             boolean fountainTransitionFinished = darknessOverlayTicker <= 0;
             boolean notVisited = true;

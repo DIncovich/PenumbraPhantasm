@@ -144,4 +144,6 @@ public class ItemRegistry {
             () -> new CheshireChestItem(BlockRegistry.CHESHIRE_CHEST.get(), new Item.Properties()));
     public static final RegistryObject<Item> ICHOR_BLOCK = ITEMS.register("ichor_block",
             () -> new FuelBlockItem(BlockRegistry.ICHOR_BLOCK.get(), new Item.Properties(), 2400 * 9));
+    public static final RegistryObject<Item> EGG = ITEMS.register("egg",
+            () -> new destiny.penumbra_phantasm.server.item.EggItem(new Item.Properties().stacksTo(1)));
 }

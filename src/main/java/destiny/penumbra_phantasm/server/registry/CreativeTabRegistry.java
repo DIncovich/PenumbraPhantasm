@@ -37,6 +37,8 @@ public class CreativeTabRegistry {
 
                 output.accept(ItemRegistry.FRIEND.get());
 
+                output.accept(ItemRegistry.EGG.get());
+
                 output.accept(ItemRegistry.ITEM_MUSIC_MEDIUM_THE_HOLY.get());
 
                 output.accept(BlockRegistry.FIRE_DOOR.get());
@@ -103,6 +105,7 @@ public class CreativeTabRegistry {
                 output.accept(ItemRegistry.FALLEN_SCARLET_LEAVES.get());
 
                 output.accept(BlockRegistry.SCARLET_LOG.get());
+                output.accept(BlockRegistry.SCARLET_LOG_MYSTERIOUS_DOOR.get());
                 output.accept(BlockRegistry.SCARLET_PLANKS.get());
                 output.accept(BlockRegistry.SCARLET_STAIRS.get());
                 output.accept(BlockRegistry.SCARLET_SLAB.get());

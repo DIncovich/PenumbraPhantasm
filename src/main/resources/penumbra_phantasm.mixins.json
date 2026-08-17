@@ -6,13 +6,17 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "InventoryMenuMixin",
+    "LivingEntityMixin",
     "PlayerMixin",
     "ServerLevelMixin",
     "StructureMixin"
   ],
   "client": [
+    "CameraMixin",
     "DeathScreenMixin",
     "GameRendererMixin",
+    "LevelRendererMixin",
+    "MouseHandlerMixin",
     "MusicSuppressionMixin",
     "PlayerMixin"
   ],

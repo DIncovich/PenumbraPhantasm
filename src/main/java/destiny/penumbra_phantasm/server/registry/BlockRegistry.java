@@ -131,6 +131,9 @@ public class BlockRegistry {
     public static final RegistryObject<Block> SCARLET_LOG = registerBlock("scarlet_log",
             () -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.CHERRY_WOOD)
                     .mapColor(MapColor.COLOR_RED).sound(SoundType.CHERRY_WOOD)));
+    public static final RegistryObject<Block> SCARLET_LOG_MYSTERIOUS_DOOR = registerBlock("scarlet_log_mysterious_door",
+            () -> new ScarletLogMysteriousDoorBlock(BlockBehaviour.Properties.copy(Blocks.CHERRY_WOOD)
+                    .mapColor(MapColor.COLOR_PINK).noOcclusion().noLootTable()));
     public static final RegistryObject<Block> SCARLET_SAPLING = registerBlock("scarlet_sapling",
             () -> new DarkWorldSaplingBlock(new ScarletGrower(), BlockBehaviour.Properties.copy(Blocks.CHERRY_SAPLING)
                     .mapColor(MapColor.COLOR_PINK).sound(SoundType.CHERRY_SAPLING)));
@@ -455,6 +458,10 @@ public class BlockRegistry {
             () -> new DarknessBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_BLACK).strength(-1.0F, 3600000.0F).noLootTable().pushReaction(PushReaction.BLOCK)
                     .noOcclusion().noParticlesOnBreak()));
+    public static final RegistryObject<Block> UNBREAKABLE_DARKNESS = BLOCKS.register("unbreakable_darkness",
+            () -> new UnbreakableDarknessBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BLACK).strength(-1.0F, 3600000.0F).noLootTable().pushReaction(PushReaction.BLOCK)
+                    .noParticlesOnBreak()));
     public static final RegistryObject<Block> GREAT_DOOR_SHAPE = BLOCKS.register("great_door_shape",
             () -> new GreatDoorShapeBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.NONE).strength(-1.0F, 3600000.0F).noLootTable().pushReaction(PushReaction.BLOCK)

@@ -713,12 +713,17 @@ public class DarkWorldUtil
 
 	public static boolean isDarkWorld(Level level)
 	{
-		return level.dimension().location().getPath().contains("dark_world");
+		return isDarkWorldPath(level.dimension().location().getPath());
 	}
 
 	public static boolean isDarkWorldKey(ResourceKey<Level> levelResourceKey)
 	{
-		return levelResourceKey.location().getPath().contains("dark_world");
+		return isDarkWorldPath(levelResourceKey.location().getPath());
+	}
+
+	private static boolean isDarkWorldPath(String path)
+	{
+		return path.contains("dark_world") || path.contains("egg_room");
 	}
 
 	public static List<ServerLevel> getAllDarkWorlds(MinecraftServer server)
@@ -726,7 +731,7 @@ public class DarkWorldUtil
 		List<ServerLevel> darkWorlds = new ArrayList<>();
 		for(ServerLevel level : server.getAllLevels())
 		{
-			if(level.dimension().location().getPath().contains("dark_world"))
+			if(isDarkWorldPath(level.dimension().location().getPath()))
 				darkWorlds.add(level);
 		}
 

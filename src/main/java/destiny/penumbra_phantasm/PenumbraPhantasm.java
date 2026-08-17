@@ -1,6 +1,7 @@
 package destiny.penumbra_phantasm;
 
 import destiny.penumbra_phantasm.client.ClientConfig;
+import destiny.penumbra_phantasm.client.KeyBindings;
 import destiny.penumbra_phantasm.client.render.blockentity.CheshireChestBlockEntityRenderer;
 import destiny.penumbra_phantasm.client.render.blockentity.DarkMarbleDiceBlockEntityRenderer;
 import destiny.penumbra_phantasm.client.render.blockentity.DustBlockEntityRenderer;
@@ -20,6 +21,7 @@ import destiny.penumbra_phantasm.server.registry.*;
 import destiny.penumbra_phantasm.client.render.model.item.DeltashieldModel;
 import destiny.penumbra_phantasm.client.render.dimension.CardKingdomDimensionEffects;
 import destiny.penumbra_phantasm.client.render.dimension.DarkWorldDimensionEffects;
+import destiny.penumbra_phantasm.client.render.dimension.EggRoomDimensionEffects;
 import destiny.penumbra_phantasm.client.render.item.DeltaShieldRenderer;
 import destiny.penumbra_phantasm.client.render.overlay.DarknessLandOverlay;
 import destiny.penumbra_phantasm.client.render.overlay.FountainDarknessOverlay;
@@ -47,6 +49,7 @@ import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -154,6 +157,11 @@ public class PenumbraPhantasm {
         }
 
         @SubscribeEvent
+        public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+            KeyBindings.register(event);
+        }
+
+        @SubscribeEvent
         public static void registerOverlays(RegisterGuiOverlaysEvent event) {
             event.registerAboveAll("fountain_darkness", FountainDarknessOverlay.OVERLAY);
             event.registerAboveAll("darkness_land", DarknessLandOverlay.OVERLAY);
@@ -164,9 +172,11 @@ public class PenumbraPhantasm {
         public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event) {
             DarkWorldDimensionEffects darkWorldDimensionEffects = new DarkWorldDimensionEffects();
             CardKingdomDimensionEffects cardKingdomDimensionEffects = new CardKingdomDimensionEffects();
+            EggRoomDimensionEffects eggRoomDimensionEffects = new EggRoomDimensionEffects();
 
             event.register(DarkWorldDimensionEffects.DARK_WORLD_DIMENSION_EFFECTS, darkWorldDimensionEffects);
             event.register(CardKingdomDimensionEffects.CARD_KINGDOM_DIMENSION_EFFECTS, cardKingdomDimensionEffects);
+            event.register(EggRoomDimensionEffects.EGG_ROOM_DIMENSION_EFFECTS, eggRoomDimensionEffects);
         }
 
         @SubscribeEvent
@@ -174,6 +184,7 @@ public class PenumbraPhantasm {
             event.enqueueWork(() -> {
                 ItemBlockRenderTypes.setRenderLayer(BlockRegistry.SCARLET_DOOR.get(), RenderType.cutout());
                 ItemBlockRenderTypes.setRenderLayer(BlockRegistry.SCARLET_TRAPDOOR.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(BlockRegistry.SCARLET_LOG_MYSTERIOUS_DOOR.get(), RenderType.cutout());
 
                 EntityRenderers.register(EntityRegistry.SEALING_SOUL.get(), SealingSoulEntityRenderer::new);
 

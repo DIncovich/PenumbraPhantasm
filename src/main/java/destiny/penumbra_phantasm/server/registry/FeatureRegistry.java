@@ -29,6 +29,7 @@ public class FeatureRegistry {
     public static final ResourceKey<ConfiguredFeature<?, ?>> SCARLET_TREE_GENERATED = registerKey("tree/scarlet_tree_generated");
     public static final ResourceKey<ConfiguredFeature<?, ?>> SCARLET_TREE_GROWN = registerKey("tree/scarlet_tree_grown");
     public static final RegistryObject<TrunkPlacerType<ScarletTrunkPlacer>> SCARLET_TRUNK = TRUNKS.register("scarlet_trunk_placer", () -> new TrunkPlacerType<>(ScarletTrunkPlacer.CODEC));
+    public static final RegistryObject<TrunkPlacerType<ScarletMysteriousTrunkPlacer>> SCARLET_MYSTERIOUS_TRUNK = TRUNKS.register("scarlet_mysterious_trunk_placer", () -> new TrunkPlacerType<>(ScarletMysteriousTrunkPlacer.CODEC));
     public static final RegistryObject<FoliagePlacerType<ScarletFoliagePlacer>> SCARLET_FOLIAGE = FOLIAGES.register("scarlet_foliage_placer", () -> new FoliagePlacerType<>(ScarletFoliagePlacer.CODEC));
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> DARK_CANDY_TREE_GENERATED = registerKey("tree/dark_candy_tree_generated");

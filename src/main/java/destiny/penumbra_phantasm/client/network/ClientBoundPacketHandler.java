@@ -1,5 +1,7 @@
 package destiny.penumbra_phantasm.client.network;
 
+import destiny.penumbra_phantasm.client.network.ClientBoundTextBoxPacket;
+import destiny.penumbra_phantasm.client.render.textbox.DarkWorldDialogue;
 import destiny.penumbra_phantasm.client.render.screen.DarknessFallScreen;
 import destiny.penumbra_phantasm.client.render.screen.FireDoorScreen;
 import destiny.penumbra_phantasm.client.render.screen.IntroScreen;
@@ -68,7 +70,7 @@ public class ClientBoundPacketHandler
 				});
 	}
 
-	public static void syncSoulStuff(boolean seenIntro, boolean diedWithSoulHearth, int soulType, int determination, int connectionLevel) {
+	public static void syncSoulStuff(boolean seenIntro, boolean diedWithSoulHearth, int soulType, int determination, int connectionLevel, int eggRoomManGone, int eggObtained) {
 		Minecraft minecraft = Minecraft.getInstance();
 		Player player = minecraft.player;
 
@@ -79,8 +81,17 @@ public class ClientBoundPacketHandler
 				cap.soulType = soulType;
 				cap.determination = determination;
 				cap.connectionLevel = connectionLevel;
+				cap.eggRoomManGone = eggRoomManGone;
+				cap.eggObtained = eggObtained;
 			});
 		}
+	}
+
+	public static void openTextBox(String scriptId) {
+		if (DarkWorldDialogue.isActive()) {
+			return;
+		}
+		DarkWorldDialogue.start(ClientBoundTextBoxPacket.createScript(scriptId));
 	}
 
 	public static void sendParticle(ResourceLocation particleId, double x, double y, double z, double vx, double vy, double vz, int count) {

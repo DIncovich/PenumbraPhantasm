@@ -62,6 +62,9 @@ public class SoundRegistry {
 
     public static RegistryObject<SoundEvent> SOUL_GRAB = registerSoundEvent("soul_grab");
     public static RegistryObject<SoundEvent> SOUL_HURT = registerSoundEvent("soul_hurt");
+    public static RegistryObject<SoundEvent> EGG_ROOM_CARD_KINGDOM = registerSoundEvent("egg_room_card_kingdom");
+    public static RegistryObject<SoundEvent> EGG_ACQUIRE = registerSoundEvent("egg_acquire");
+    public static RegistryObject<SoundEvent> TEXTBOX_GENERIC = registerSoundEvent("textbox_generic");
 
     private static RegistryObject<SoundEvent> registerSoundEvent(String sound)
     {

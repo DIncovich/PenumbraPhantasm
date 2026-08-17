@@ -29,12 +29,36 @@ public class SoulCapability implements INBTSerializable<CompoundTag> {
     public static final String DIED_WITH_SOUL_HEARTH = "diedSoulHearth";
     public static final String DETERMINATION = "determination";
     public static final String CONNECTION_LEVEL = "connectionLevel";
+    public static final String EGG_ROOM_MAN_GONE = "eggRoomManGone";
+    public static final String EGG_OBTAINED = "eggObtained";
+    public static final String EGG_RETURN_DIM = "eggReturnDim";
+    public static final String EGG_RETURN_X = "eggReturnX";
+    public static final String EGG_RETURN_Y = "eggReturnY";
+    public static final String EGG_RETURN_Z = "eggReturnZ";
+    public static final String EGG_RETURN_YAW = "eggReturnYaw";
+    public static final String EGG_DOOR_X = "eggDoorX";
+    public static final String EGG_DOOR_Y = "eggDoorY";
+    public static final String EGG_DOOR_Z = "eggDoorZ";
+	public static final String EGG_LEFT_ENTRANCE = "eggLeftEntrance";
+	public static final String EGG_ROOM_FRONT_HINT = "eggRoomFrontHint";
 
     public boolean seenIntro = false;
     public int soulType = 1;
     public boolean diedWithSoulHearth = false;
     public int determination = 0;
     public int connectionLevel = 0;
+    public int eggRoomManGone = 0;
+    public int eggObtained = 0;
+    public String eggReturnDim = "";
+    public double eggReturnX;
+    public double eggReturnY;
+    public double eggReturnZ;
+    public float eggReturnYaw;
+    public int eggDoorX;
+    public int eggDoorY;
+    public int eggDoorZ;
+    public boolean eggLeftEntrance;
+    public int eggRoomFrontHint;
 
     public void tick(Level level, Player player) {
         if (!seenIntro) {
@@ -67,7 +91,7 @@ public class SoulCapability implements INBTSerializable<CompoundTag> {
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
-            PacketHandlerRegistry.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new ClientBoundSoulSyncPacket(seenIntro, diedWithSoulHearth, soulType, determination, connectionLevel));
+            PacketHandlerRegistry.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new ClientBoundSoulSyncPacket(seenIntro, diedWithSoulHearth, soulType, determination, connectionLevel, eggRoomManGone, eggObtained));
         }
     }
 
@@ -102,6 +126,17 @@ public class SoulCapability implements INBTSerializable<CompoundTag> {
         tag.putBoolean(DIED_WITH_SOUL_HEARTH, diedWithSoulHearth);
         tag.putInt(DETERMINATION, Mth.clamp(determination, 0, 100));
         tag.putInt(CONNECTION_LEVEL, Mth.clamp(connectionLevel, 0, 3));
+        tag.putInt(EGG_ROOM_MAN_GONE, eggRoomManGone);
+        tag.putInt(EGG_OBTAINED, eggObtained);
+        tag.putString(EGG_RETURN_DIM, eggReturnDim == null ? "" : eggReturnDim);
+        tag.putDouble(EGG_RETURN_X, eggReturnX);
+        tag.putDouble(EGG_RETURN_Y, eggReturnY);
+        tag.putDouble(EGG_RETURN_Z, eggReturnZ);
+        tag.putFloat(EGG_RETURN_YAW, eggReturnYaw);
+        tag.putInt(EGG_DOOR_X, eggDoorX);
+        tag.putInt(EGG_DOOR_Y, eggDoorY);
+        tag.putInt(EGG_DOOR_Z, eggDoorZ);
+        tag.putInt(EGG_ROOM_FRONT_HINT, eggRoomFrontHint);
 
         return tag;
     }
@@ -113,6 +148,42 @@ public class SoulCapability implements INBTSerializable<CompoundTag> {
         this.diedWithSoulHearth = tag.getBoolean(DIED_WITH_SOUL_HEARTH);
         this.determination = tag.getInt(DETERMINATION);
         this.connectionLevel = tag.getInt(CONNECTION_LEVEL);
+        this.eggRoomManGone = tag.getInt(EGG_ROOM_MAN_GONE);
+        this.eggObtained = tag.getInt(EGG_OBTAINED);
+        this.eggReturnDim = tag.getString(EGG_RETURN_DIM);
+        this.eggReturnX = tag.getDouble(EGG_RETURN_X);
+        this.eggReturnY = tag.getDouble(EGG_RETURN_Y);
+        this.eggReturnZ = tag.getDouble(EGG_RETURN_Z);
+        this.eggReturnYaw = tag.getFloat(EGG_RETURN_YAW);
+        this.eggDoorX = tag.getInt(EGG_DOOR_X);
+        this.eggDoorY = tag.getInt(EGG_DOOR_Y);
+        this.eggDoorZ = tag.getInt(EGG_DOOR_Z);
+        this.eggLeftEntrance = false;
+        this.eggRoomFrontHint = tag.getInt(EGG_ROOM_FRONT_HINT);
+    }
+
+    public boolean hasEggRoomManGone(int bit) {
+        return (eggRoomManGone & bit) != 0;
+    }
+
+    public void setEggRoomManGone(int bit) {
+        eggRoomManGone |= bit;
+    }
+
+    public boolean hasEggObtained(int bit) {
+        return (eggObtained & bit) != 0;
+    }
+
+    public void setEggObtained(int bit) {
+        eggObtained |= bit;
+    }
+
+    public boolean hasEggRoomFrontHint(int bit) {
+        return (eggRoomFrontHint & bit) != 0;
+    }
+
+    public void setEggRoomFrontHint(int bit) {
+        eggRoomFrontHint |= bit;
     }
 
     public void sync(@NotNull SoulCapability cap) {
@@ -121,5 +192,16 @@ public class SoulCapability implements INBTSerializable<CompoundTag> {
         this.seenIntro = cap.seenIntro;
         this.determination = cap.determination;
         this.connectionLevel = cap.connectionLevel;
+        this.eggRoomManGone = cap.eggRoomManGone;
+        this.eggObtained = cap.eggObtained;
+        this.eggReturnDim = cap.eggReturnDim;
+        this.eggReturnX = cap.eggReturnX;
+        this.eggReturnY = cap.eggReturnY;
+        this.eggReturnZ = cap.eggReturnZ;
+        this.eggReturnYaw = cap.eggReturnYaw;
+        this.eggDoorX = cap.eggDoorX;
+        this.eggDoorY = cap.eggDoorY;
+        this.eggDoorZ = cap.eggDoorZ;
+        this.eggRoomFrontHint = cap.eggRoomFrontHint;
     }
 }

@@ -8,6 +8,10 @@ import destiny.penumbra_phantasm.server.block.LuminescentWaterFluidBlock;
 import destiny.penumbra_phantasm.server.capability.*;
 import destiny.penumbra_phantasm.server.fluid.PureDarknessFluidType;
 import destiny.penumbra_phantasm.server.fountain.GenericProvider;
+import destiny.penumbra_phantasm.server.egg.EggRoomManager;
+import destiny.penumbra_phantasm.server.egg.EggRoomUtil;
+import destiny.penumbra_phantasm.server.item.EggItem;
+import destiny.penumbra_phantasm.server.network.ServerBoundTextBoxPacket;
 import destiny.penumbra_phantasm.server.item.ScarletBucketItem;
 import destiny.penumbra_phantasm.server.registry.*;
 import net.minecraft.core.BlockPos;
@@ -34,8 +38,10 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -172,5 +178,67 @@ public class ForgeEvents {
                 event.setCanceled(true);
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onEggRoomFall(LivingFallEvent event) {
+        if (event.getEntity() instanceof Player player && EggRoomUtil.isEggRoom(player.level())) {
+            event.setCanceled(true);
+            player.fallDistance = 0f;
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEggRoomBreak(BlockEvent.BreakEvent event) {
+        if (EggRoomUtil.isEggRoom(event.getPlayer().level())) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEggRoomPlace(BlockEvent.EntityPlaceEvent event) {
+        if (event.getLevel() instanceof Level level && EggRoomUtil.isEggRoom(level)) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEggRoomLeftClick(PlayerInteractEvent.LeftClickBlock event) {
+        if (EggRoomUtil.isEggRoom(event.getLevel())) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEggRoomRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        if (!EggRoomUtil.isEggRoom(event.getLevel())) {
+            return;
+        }
+        event.setCanceled(true);
+        if (!event.getLevel().isClientSide && event.getHand() == InteractionHand.MAIN_HAND && event.getEntity() instanceof ServerPlayer player) {
+            EggRoomManager.tryInteract(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEggRoomRightClickItem(PlayerInteractEvent.RightClickItem event) {
+        if (!EggRoomUtil.isEggRoom(event.getLevel())) {
+            return;
+        }
+        if (event.getItemStack().getItem() instanceof EggItem) {
+            return;
+        }
+        event.setCanceled(true);
+        if (!event.getLevel().isClientSide && event.getHand() == InteractionHand.MAIN_HAND && event.getEntity() instanceof ServerPlayer player) {
+            EggRoomManager.tryInteract(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEggRoomRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
+        if (!EggRoomUtil.isEggRoom(event.getLevel()) || event.getHand() != InteractionHand.MAIN_HAND) {
+            return;
+        }
+        PacketHandlerRegistry.INSTANCE.sendToServer(new ServerBoundTextBoxPacket(ServerBoundTextBoxPacket.INTERACT, false));
     }
 }

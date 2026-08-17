@@ -78,7 +78,8 @@ public class CardKingdomDimensionEffects extends DarkWorldDimensionEffects {
     }
 
     public static boolean isCardKingdomDarkWorld(ClientLevel level) {
-        return level.dimension().location().getPath().contains("card_kingdom");
+        String path = level.dimension().location().getPath();
+        return path.contains("card_kingdom") && !path.contains("egg_room");
     }
 
     private static VertexBuffer createSkyBuffer(float scale) {
