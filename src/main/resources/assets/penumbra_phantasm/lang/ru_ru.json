@@ -59,6 +59,8 @@
   "item.penumbra_phantasm.luminescent_water_bucket": "Ведро флуоресцентной воды",
   "item.penumbra_phantasm.pure_darkness_bucket": "Ведро чистой тьмы",
 
+  "item.penumbra_phantasm.egg": "Яйцо",
+  
   "block.penumbra_phantasm.twilight_grass": "Сумеречная трава",
   "block.penumbra_phantasm.twilight_grass_block": "Блок сумеречной травы",
   "block.penumbra_phantasm.night_grass": "Ночная трава",
@@ -352,6 +354,9 @@
   "block.penumbra_phantasm.ivory_brick_button": "Кирпичная кнопка из слоновой кости",
   "block.penumbra_phantasm.ivory_brick_pressure_plate": "Кирпичная нажимная плита из слоновой кости",
 
+  "block.penumbra_phantasm.scarlet_log_mysterious_door": "Таинственная дверь",
+  "block.penumbra_phantasm.unbreakable_darkness": "Тьма",
+
   "itemGroup.penumbra_phantasm.main": "PENUMBRA PHANTASM",
   "itemGroup.penumbra_phantasm.card_kingdom": "КАРТОЧНОЕ КОРОЛЕВСТВО",
   "itemGroup.penumbra_phantasm.the_depths": "ГЛУБИНЫ",
@@ -372,6 +377,8 @@
   "advancement.penumbra_phantasm.dark_fountain_make.description": "Создайте тёмный фонтан",
   "advancement.penumbra_phantasm.card_kingdom_visit.title": "Фулл-хаус",
   "advancement.penumbra_phantasm.card_kingdom_visit.description": "Посетите тёмный мир Карточного королевства",
+  "advancement.penumbra_phantasm.egg_room_card_kingdom.title": "Он за деревом",
+  "advancement.penumbra_phantasm.egg_room_card_kingdom.description": "Найдите комнату с яйцом",
   "advancement.penumbra_phantasm.scarlet_tree.title": "За деревом",
   "advancement.penumbra_phantasm.scarlet_tree.description": "Найдите алое дерево",
   "advancement.penumbra_phantasm.dark_candy.title": "Дезинтегрирующаяся сладость",
@@ -438,6 +445,9 @@
   "gui.penumbra_phantasm.umbrastone_furnace": " УМБРОВАЯ ПЕЧЬ",
   "gui.penumbra_phantasm.dark_candy_crafting_table": "  ВЕРСТАК ИЗ Т.-К. ДЕРЕВА",
 
+  "gui.penumbra_phantasm.textbox.yes": "Да",
+  "gui.penumbra_phantasm.textbox.no": "Нет",
+  
   "location.penumbra_phantasm.dark_fountain": "Тёмный фонтан",
   "location.penumbra_phantasm.dark_fountain.description": "'Гейзер, придающий земле форму...'",
 
@@ -450,6 +460,8 @@
   "biome.penumbra_phantasm.cliffs": "??????",
   "biome.penumbra_phantasm.cliffs.description": "'Только глаза, ослепленные тьмой, могут увидеть путь....'",
 
+  "biome.penumbra_phantasm.egg_room_card_kingdom": "Комната с яйцом",
+  
   "message.penumbra_phantasm.making_fountain_no_soul_hearth": "Нет горнила ДУШИ...",
   "message.penumbra_phantasm.making_fountain_not_enough_determination": "Для пронзания недостаточно РЕШИМОСТИ...",
   "message.penumbra_phantasm.making_fountain_invalid_position": "Должен стоять на полном блоке",
@@ -529,5 +541,20 @@
   "screen.penumbra_phantasm.intro.line.26": "С   С И Л О Й",
   "screen.penumbra_phantasm.intro.line.27": "< Д Е Л Ь Т А   Р У Н Ы . >",
   "screen.penumbra_phantasm.intro.line.28": "С Т У П А Й   В П Е Р Ё Д",
-  "screen.penumbra_phantasm.intro.line.29": "             В   Э Т О Т   М И Р !"
+  "screen.penumbra_phantasm.intro.line.29": "             В   Э Т О Т   М И Р !",
+
+  "key.categories.penumbra_phantasm": "PENUMBRA PHANTASM",
+  "key.penumbra_phantasm.confirm": "Подтвердить",
+  "key.penumbra_phantasm.confirm_alt": "Подтвердить (Альт.)",
+  "key.penumbra_phantasm.cancel": "Отменить",
+  "key.penumbra_phantasm.cancel_alt": "Отменить (Альт.)",
+
+  "textbox.penumbra_phantasm.egg.he_is_behind": "(Он за деревом.)",
+  "textbox.penumbra_phantasm.egg.it_is_a_tree": "(Это дерево.)",
+  "textbox.penumbra_phantasm.egg.man_here": "(Здесь стоит мужчина.)",
+  "textbox.penumbra_phantasm.egg.offered": "(Он вам что-то даёт.)",
+  "textbox.penumbra_phantasm.egg.no_man": "(Здесь не стоит мужчина.)",
+  "textbox.penumbra_phantasm.egg.received": "(Вы получили яйцо.)",
+  "textbox.penumbra_phantasm.egg.neednt": "(Тогда ему нет причин здесь находиться.)",
+   "textbox.penumbra_phantasm.egg.used": "(Вы использовали яйцо.)"
 }
