@@ -13,6 +13,7 @@ import destiny.penumbra_phantasm.client.render.GreatDoorRenderUtil;
 import destiny.penumbra_phantasm.client.render.screen.DarkWorldInventoryScreen;
 import destiny.penumbra_phantasm.client.render.screen.DarkWorldLanScreen;
 import destiny.penumbra_phantasm.client.render.screen.DarkWorldPauseScreen;
+import destiny.penumbra_phantasm.client.KeyBindings;
 import destiny.penumbra_phantasm.client.render.textbox.DarkWorldDialogue;
 import destiny.penumbra_phantasm.server.capability.SoulCapability;
 import destiny.penumbra_phantasm.server.egg.EggRoomUtil;
@@ -56,7 +57,9 @@ import destiny.penumbra_phantasm.client.render.screen.IntroScreen;
 import destiny.penumbra_phantasm.client.sound.MusicManager;
 import destiny.penumbra_phantasm.server.fountain.DarkFountain;
 import destiny.penumbra_phantasm.server.capability.DarkFountainCapability;
+import destiny.penumbra_phantasm.server.network.ServerBoundTextBoxPacket;
 import destiny.penumbra_phantasm.server.registry.CapabilityRegistry;
+import destiny.penumbra_phantasm.server.registry.PacketHandlerRegistry;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -268,20 +271,26 @@ public class ClientEvents {
 	@SubscribeEvent
 	public static void clientTick(TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.END) {
-			DarkWorldDialogue.tick();
 			IntroScreen.tickWorldThumbnail(Minecraft.getInstance());
 			MusicManager.getInstance().tick();
 			LocalPlayer player = Minecraft.getInstance().player;
 			ClientLevel level = Minecraft.getInstance().level;
-			if (player == null) return;
-			if (level == null) return;
+			if (player == null || level == null) {
+				DarkWorldDialogue.stop();
+				lastClientDim = null;
+				return;
+			}
 			if (lastClientDim == null || !lastClientDim.equals(level.dimension())) {
+				if (lastClientDim != null) {
+					DarkWorldDialogue.stop();
+				}
 				lastClientDim = level.dimension();
 				eggRoomRebuildLeft = EggRoomUtil.isEggRoom(level) ? 20 : 0;
 				if (eggRoomRebuildLeft > 0) {
 					Minecraft.getInstance().levelRenderer.allChanged();
 				}
 			}
+			DarkWorldDialogue.tick();
 			if (EggRoomUtil.isEggRoom(level)) {
 				player.setXRot(0f);
 				player.xRotO = 0f;
@@ -351,7 +360,17 @@ public class ClientEvents {
 			}
 			return;
 		}
-		if (Minecraft.getInstance().screen instanceof IntroScreen introScreen) {
+		Minecraft minecraft = Minecraft.getInstance();
+		if (event.getAction() == InputConstants.PRESS && KeyBindings.isConfirmKey(event.getKey())
+				&& minecraft.screen == null && minecraft.player != null
+				&& EggRoomUtil.isEggRoom(minecraft.player.level())) {
+			PacketHandlerRegistry.INSTANCE.sendToServer(new ServerBoundTextBoxPacket(ServerBoundTextBoxPacket.INTERACT, false));
+			if (event.isCancelable()) {
+				event.setCanceled(true);
+			}
+			return;
+		}
+		if (minecraft.screen instanceof IntroScreen introScreen) {
 			if (event.getAction() != 1 || !introScreen.isChoosing)
 				return;
 
@@ -415,6 +434,9 @@ public class ClientEvents {
 	@SubscribeEvent
 	public static void onScreenOpen(ScreenEvent.Opening event) {
 		Screen newScreen = event.getNewScreen();
+		if (newScreen != null) {
+			DarkWorldDialogue.stop();
+		}
 		Minecraft minecraft = Minecraft.getInstance();
 		Player player = minecraft.player;
 		if (player == null)

@@ -8,10 +8,8 @@ import destiny.penumbra_phantasm.server.block.LuminescentWaterFluidBlock;
 import destiny.penumbra_phantasm.server.capability.*;
 import destiny.penumbra_phantasm.server.fluid.PureDarknessFluidType;
 import destiny.penumbra_phantasm.server.fountain.GenericProvider;
-import destiny.penumbra_phantasm.server.egg.EggRoomManager;
 import destiny.penumbra_phantasm.server.egg.EggRoomUtil;
 import destiny.penumbra_phantasm.server.item.EggItem;
-import destiny.penumbra_phantasm.server.network.ServerBoundTextBoxPacket;
 import destiny.penumbra_phantasm.server.item.ScarletBucketItem;
 import destiny.penumbra_phantasm.server.registry.*;
 import net.minecraft.core.BlockPos;
@@ -215,9 +213,6 @@ public class ForgeEvents {
             return;
         }
         event.setCanceled(true);
-        if (!event.getLevel().isClientSide && event.getHand() == InteractionHand.MAIN_HAND && event.getEntity() instanceof ServerPlayer player) {
-            EggRoomManager.tryInteract(player);
-        }
     }
 
     @SubscribeEvent
@@ -229,16 +224,5 @@ public class ForgeEvents {
             return;
         }
         event.setCanceled(true);
-        if (!event.getLevel().isClientSide && event.getHand() == InteractionHand.MAIN_HAND && event.getEntity() instanceof ServerPlayer player) {
-            EggRoomManager.tryInteract(player);
-        }
-    }
-
-    @SubscribeEvent
-    public static void onEggRoomRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
-        if (!EggRoomUtil.isEggRoom(event.getLevel()) || event.getHand() != InteractionHand.MAIN_HAND) {
-            return;
-        }
-        PacketHandlerRegistry.INSTANCE.sendToServer(new ServerBoundTextBoxPacket(ServerBoundTextBoxPacket.INTERACT, false));
     }
 }

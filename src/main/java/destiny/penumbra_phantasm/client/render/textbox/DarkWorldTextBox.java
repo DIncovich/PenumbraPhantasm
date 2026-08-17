@@ -37,12 +37,14 @@ public final class DarkWorldTextBox {
 		graphics.blit(TextBoxMetrics.TEXTURE, 0, 0, 0, 0, TextBoxMetrics.BOX_WIDTH, TextBoxMetrics.BOX_HEIGHT,
 				TextBoxMetrics.TEXTURE_SIZE, TextBoxMetrics.TEXTURE_SIZE);
 
-		int jewelFrame = (int) ((Util.getMillis() / 1000.0 * 30.0) / 10.0) % TextBoxMetrics.JEWEL_FRAMES;
-		int jewelU = jewelFrame * TextBoxMetrics.JEWEL_SIZE;
-		blitJewel(graphics, 0, 0, jewelU, false, false);
-		blitJewel(graphics, TextBoxMetrics.BOX_WIDTH, 0, jewelU, true, false);
-		blitJewel(graphics, 0, TextBoxMetrics.BOX_HEIGHT, jewelU, false, true);
-		blitJewel(graphics, TextBoxMetrics.BOX_WIDTH, TextBoxMetrics.BOX_HEIGHT, jewelU, true, true);
+		float t = (float) (Util.getMillis() % TextBoxMetrics.GLOW_PERIOD_MS) / TextBoxMetrics.GLOW_PERIOD_MS;
+		float jewelAlpha = 1f - Mth.sin(t * Mth.PI);
+		graphics.setColor(1f, 1f, 1f, jewelAlpha);
+		blitJewel(graphics, 0, 0, false, false);
+		blitJewel(graphics, TextBoxMetrics.BOX_WIDTH, 0, true, false);
+		blitJewel(graphics, 0, TextBoxMetrics.BOX_HEIGHT, false, true);
+		blitJewel(graphics, TextBoxMetrics.BOX_WIDTH, TextBoxMetrics.BOX_HEIGHT, true, true);
+		graphics.setColor(1f, 1f, 1f, 1f);
 
 		Font font = minecraft.font;
 		List<String> lines = writer.visibleLines();
@@ -59,15 +61,16 @@ public final class DarkWorldTextBox {
 		RenderSystem.disableBlend();
 	}
 
-	private static void blitJewel(GuiGraphics graphics, int x, int y, int u, boolean flipX, boolean flipY) {
-		PoseStack pose = graphics.pose();
-		pose.pushPose();
-		pose.translate(x, y, 0);
-		pose.scale(flipX ? -1 : 1, flipY ? -1 : 1, 1);
-		graphics.blit(TextBoxMetrics.TEXTURE, 0, 0, u, TextBoxMetrics.JEWEL_V,
-				TextBoxMetrics.JEWEL_SIZE, TextBoxMetrics.JEWEL_SIZE,
+	private static void blitJewel(GuiGraphics graphics, int x, int y, boolean flipX, boolean flipY) {
+		int size = TextBoxMetrics.JEWEL_SIZE;
+		int destX = flipX ? x - size : x;
+		int destY = flipY ? y - size : y;
+		float uOffset = flipX ? size : 0;
+		float vOffset = flipY ? TextBoxMetrics.JEWEL_V + size : TextBoxMetrics.JEWEL_V;
+		int uWidth = flipX ? -size : size;
+		int vHeight = flipY ? -size : size;
+		graphics.blit(TextBoxMetrics.TEXTURE, destX, destY, size, size, uOffset, vOffset, uWidth, vHeight,
 				TextBoxMetrics.TEXTURE_SIZE, TextBoxMetrics.TEXTURE_SIZE);
-		pose.popPose();
 	}
 
 	private static void drawGridLine(GuiGraphics graphics, Font font, String text, int x, int y) {

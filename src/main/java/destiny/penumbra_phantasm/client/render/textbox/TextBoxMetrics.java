@@ -12,11 +12,11 @@ public final class TextBoxMetrics {
 	public static final int BOX_HEIGHT = 83;
 	public static final int JEWEL_V = 83;
 	public static final int JEWEL_SIZE = 16;
-	public static final int JEWEL_FRAMES = 4;
+	public static final int GLOW_PERIOD_MS = 5000;
 
 	public static final int CHARLINE = 33;
 	public static final int MAX_LINES = 3;
-	public static final int HSPACE = 7;
+	public static final int HSPACE = 6;
 	public static final int VSPACE = 18;
 	public static final int TEXT_ORIGIN_X = 17;
 	public static final int TEXT_ORIGIN_Y = 14;

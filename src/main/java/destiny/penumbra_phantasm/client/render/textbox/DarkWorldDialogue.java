@@ -87,6 +87,12 @@ public final class DarkWorldDialogue {
 		if (!isActive()) {
 			return false;
 		}
+		if (key == GLFW.GLFW_KEY_ESCAPE) {
+			if (action == GLFW.GLFW_PRESS) {
+				stop();
+			}
+			return false;
+		}
 		if (writer != null && writer.isChoosing() && isChoiceMoveKey(key)) {
 			if (action == GLFW.GLFW_PRESS) {
 				if (isChoiceLeftKey(key)) {

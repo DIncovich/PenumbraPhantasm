@@ -10,6 +10,7 @@ import destiny.penumbra_phantasm.server.network.ServerBoundFireDoorPacket;
 import destiny.penumbra_phantasm.server.network.ServerBoundIntroPacket;
 import destiny.penumbra_phantasm.server.registry.CapabilityRegistry;
 import destiny.penumbra_phantasm.server.registry.PacketHandlerRegistry;
+import destiny.penumbra_phantasm.server.util.DarkWorldUtil;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
@@ -89,6 +90,10 @@ public class ClientBoundPacketHandler
 
 	public static void openTextBox(String scriptId) {
 		if (DarkWorldDialogue.isActive()) {
+			return;
+		}
+		Minecraft minecraft = Minecraft.getInstance();
+		if (minecraft.player == null || !DarkWorldUtil.isDarkWorld(minecraft.player.level())) {
 			return;
 		}
 		DarkWorldDialogue.start(ClientBoundTextBoxPacket.createScript(scriptId));
