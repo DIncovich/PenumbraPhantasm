@@ -115,10 +115,6 @@ public class MusicManager {
             stopImmediately();
             return;
         }
-        if (DarkWorldUtil.isDepths(level)) {
-            stopImmediately();
-            return;
-        }
 
         LazyOptional<DarkFountainCapability> sealingLazyCap = level.getCapability(CapabilityRegistry.DARK_FOUNTAIN);
         if (sealingLazyCap.isPresent() && sealingLazyCap.resolve().isPresent()) {
@@ -367,6 +363,10 @@ public class MusicManager {
 
         DarkFountainCapability cap = lazyCap.resolve().orElse(null);
         if (cap == null) return null;
+
+        if (DarkWorldUtil.isDepths(level)) {
+            return null;
+        }
 
         for (Map.Entry<BlockPos, DarkFountain> entry : cap.darkFountains.entrySet()) {
             DarkFountain fountain = entry.getValue();

@@ -52,6 +52,8 @@ public class ScreenAnimationCapability implements INBTSerializable<CompoundTag> 
 
     public int sealShineTicker = -1;
 
+    public int depthsEntryTicker = -1;
+
     public void tick(Level level, Player player) {
         if(player instanceof ServerPlayer serverPlayer)
         {
@@ -88,6 +90,13 @@ public class ScreenAnimationCapability implements INBTSerializable<CompoundTag> 
         }
         if (sealShineTicker >= 0) {
             sealShineTicker++;
+        }
+
+        if (depthsEntryTicker >= 5) {
+            depthsEntryTicker = -1;
+        }
+        if (depthsEntryTicker >= 0) {
+            depthsEntryTicker++;
         }
 
         //Location title stuff below this point
@@ -146,7 +155,7 @@ public class ScreenAnimationCapability implements INBTSerializable<CompoundTag> 
     }
 
     public void syncToClient(ServerPlayer serverPlayer) {
-        PacketHandlerRegistry.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new ClientBoundAnimationPacket(darknessLandTicker, darknessOverlayTicker, previousLocation, currentLocation, titleAlphaTicker, sealShineTicker));
+        PacketHandlerRegistry.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new ClientBoundAnimationPacket(darknessLandTicker, darknessOverlayTicker, previousLocation, currentLocation, titleAlphaTicker, sealShineTicker, depthsEntryTicker));
     }
 
     @Override
@@ -166,5 +175,6 @@ public class ScreenAnimationCapability implements INBTSerializable<CompoundTag> 
         this.currentLocation = cap.currentLocation;
         this.titleAlphaTicker = cap.titleAlphaTicker;
         this.sealShineTicker = cap.sealShineTicker;
+        this.depthsEntryTicker = cap.depthsEntryTicker;
     }
 }

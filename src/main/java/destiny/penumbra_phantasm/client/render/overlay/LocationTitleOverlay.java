@@ -27,7 +27,7 @@ public class LocationTitleOverlay {
 
         if (player == null) return;
 
-        if (!DarkWorldUtil.isDarkWorld(player.level()) || EggRoomUtil.isEggRoom(player.level()))
+        if (!DarkWorldUtil.isDarkWorld(player.level()) || EggRoomUtil.isEggRoom(player.level()) || DarkWorldUtil.isDepths(player.level()))
             return;
 
         //Getting capability

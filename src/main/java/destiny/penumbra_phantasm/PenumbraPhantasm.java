@@ -11,6 +11,7 @@ import destiny.penumbra_phantasm.client.render.model.*;
 import destiny.penumbra_phantasm.client.render.model.great_door.GreatDoorBacksideModel;
 import destiny.penumbra_phantasm.client.render.model.great_door.GreatDoorClosedModel;
 import destiny.penumbra_phantasm.client.render.model.great_door.GreatDoorOpenModel;
+import destiny.penumbra_phantasm.client.render.overlay.DepthsEntryOverlay;
 import destiny.penumbra_phantasm.client.render.particle.*;
 import destiny.penumbra_phantasm.client.render.screen.CheshireChestScreen;
 import destiny.penumbra_phantasm.client.render.screen.DarkCandyCraftingTableScreen;
@@ -167,6 +168,7 @@ public class PenumbraPhantasm {
             event.registerAboveAll("fountain_darkness", FountainDarknessOverlay.OVERLAY);
             event.registerAboveAll("darkness_land", DarknessLandOverlay.OVERLAY);
             event.registerAboveAll("location_title", LocationTitleOverlay.OVERLAY);
+            event.registerAboveAll("depths_entry", DepthsEntryOverlay.OVERLAY);
         }
 
         @SubscribeEvent

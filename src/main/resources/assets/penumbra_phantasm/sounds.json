@@ -299,5 +299,17 @@
     [
       "penumbra_phantasm:textbox_generic"
     ]
+  },
+  "depths_ambience": {
+    "sounds":
+    [
+      "penumbra_phantasm:depths_ambience"
+    ]
+  },
+  "depths_enter": {
+    "sounds":
+    [
+      "penumbra_phantasm:depths_enter"
+    ]
   }
 }

@@ -1015,7 +1015,12 @@ public class DarkFountain {
             return;
         }
 
-        Vec3 spawn = Vec3.atCenterOf(this.depthsPos).add(0.0, -0.2, 0.0);
+        player.getCapability(CapabilityRegistry.SCREEN_ANIMATION).ifPresent(cap -> {
+            cap.depthsEntryTicker = 0;
+            cap.syncToClient(player);
+        });
+
+        Vec3 spawn = Vec3.atCenterOf(this.depthsPos).add(DEPTHS_EJECT_OFFSET, 0.0, 0.0);
         player.fallDistance = 0f;
         player.teleportTo(depths, spawn.x, spawn.y, spawn.z, player.getYRot(), player.getXRot());
         player.fallDistance = 0f;
