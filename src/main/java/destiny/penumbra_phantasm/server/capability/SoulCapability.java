@@ -3,6 +3,7 @@ package destiny.penumbra_phantasm.server.capability;
 import destiny.penumbra_phantasm.client.network.ClientBoundIntroPacket;
 import destiny.penumbra_phantasm.client.network.ClientBoundSoulSyncPacket;
 import destiny.penumbra_phantasm.server.item.SoulHearthItem;
+import destiny.penumbra_phantasm.server.registry.DamageTypeRegistry;
 import destiny.penumbra_phantasm.server.registry.ItemRegistry;
 import destiny.penumbra_phantasm.server.registry.PacketHandlerRegistry;
 import destiny.penumbra_phantasm.server.util.DarkWorldUtil;
@@ -86,6 +87,10 @@ public class SoulCapability implements INBTSerializable<CompoundTag> {
             if (determination > 0) {
                 if (level.getGameTime() % (5 * 20) == 0) {
                     determination = determination - 1;
+                }
+            } else {
+                if (level.getGameTime() % 60 == 0) {
+                    player.hurt(DamageTypeRegistry.getSimpleDamageSource(level, DamageTypeRegistry.EROSION), 6);
                 }
             }
         }

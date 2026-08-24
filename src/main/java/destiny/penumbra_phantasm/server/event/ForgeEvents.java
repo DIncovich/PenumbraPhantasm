@@ -38,6 +38,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -177,6 +178,30 @@ public class ForgeEvents {
                 event.setCanceled(true);
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onLivingHeal(LivingHealEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+        if (player.hasEffect(net.minecraft.world.effect.MobEffects.REGENERATION)
+                || player.hasEffect(net.minecraft.world.effect.MobEffects.HEAL)) {
+            return;
+        }
+        if (event.getAmount() > 1.0F) {
+            return;
+        }
+
+        if (!DarkWorldUtil.isDepths(player.level())) return;
+
+        player.getCapability(CapabilityRegistry.SOUL).ifPresent(cap -> {
+            int determination = cap.determination;
+
+            if (determination <= 0) {
+                event.setAmount(event.getAmount() * 0);
+            }
+        });
     }
 
     @SubscribeEvent
