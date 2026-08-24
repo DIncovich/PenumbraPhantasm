@@ -18,7 +18,8 @@
     "LevelRendererMixin",
     "MouseHandlerMixin",
     "MusicSuppressionMixin",
-    "PlayerMixin"
+    "PlayerMixin",
+    "LightTextureMixin"
   ],
   "injectors": {
     "defaultRequire": 1
