@@ -102,17 +102,21 @@ public class ScreenAnimationCapability implements INBTSerializable<CompoundTag> 
         //Location title stuff below this point
         currentLocation = Util.makeDescriptionId("biome", level.getBiome(player.getOnPos()).unwrapKey().get().location());
 
-        LazyOptional<DarkFountainCapability> lazyCap = level.getCapability(CapabilityRegistry.DARK_FOUNTAIN);
-        if (lazyCap.isPresent()) {
-            DarkFountainCapability cap = lazyCap.resolve().orElse(null);
 
-            for (Map.Entry<BlockPos, DarkFountain> entry : cap.darkFountains.entrySet()) {
-                DarkFountain fountain = entry.getValue();
-                if (fountain.openingTick != -1) continue;
+        if (!DarkWorldUtil.isDepths(level)) {
+            LazyOptional<DarkFountainCapability> lazyCap = level.getCapability(CapabilityRegistry.DARK_FOUNTAIN);
 
-                double distance = fountain.getFountainPos().getCenter().subtract(player.position()).horizontalDistance();
-                if (distance <= FOUNTAIN_MUSIC_RANGE) {
-                    currentLocation = Util.makeDescriptionId("location", new ResourceLocation(PenumbraPhantasm.MODID, "dark_fountain"));
+            if (lazyCap.isPresent()) {
+                DarkFountainCapability cap = lazyCap.resolve().orElse(null);
+
+                for (Map.Entry<BlockPos, DarkFountain> entry : cap.darkFountains.entrySet()) {
+                    DarkFountain fountain = entry.getValue();
+                    if (fountain.openingTick != -1) continue;
+
+                    double distance = fountain.getFountainPos().getCenter().subtract(player.position()).horizontalDistance();
+                    if (distance <= FOUNTAIN_MUSIC_RANGE) {
+                        currentLocation = Util.makeDescriptionId("location", new ResourceLocation(PenumbraPhantasm.MODID, "dark_fountain"));
+                    }
                 }
             }
         }

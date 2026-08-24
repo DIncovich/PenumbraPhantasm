@@ -70,8 +70,8 @@ public class DarkFountain {
     public static final int DEPTHS_XZ_SCALE = 4;
     public static final int DEPTHS_FOUNTAIN_Y_OFFSET = 64;
 
-    public static final double DEPTHS_PIERCE_XZ = 1.5;
-    public static final double DEPTHS_PIERCE_PUSH_STRENGTH = 0.075;
+    public static final double DEPTHS_PIERCE_XZ = 1;
+    public static final double DEPTHS_PIERCE_PUSH_STRENGTH = 0.07;
 
     public static final double DEPTHS_SUCTION_XZ = 8.0;
     public static final double DEPTHS_SUCTION_Y = 64.0;
@@ -1017,10 +1017,11 @@ public class DarkFountain {
 
         player.getCapability(CapabilityRegistry.SCREEN_ANIMATION).ifPresent(cap -> {
             cap.depthsEntryTicker = 0;
+            cap.darknessOverlayTicker = TRANSPORT_TICKER_DURATION;
             cap.syncToClient(player);
         });
 
-        Vec3 spawn = Vec3.atCenterOf(this.depthsPos).add(DEPTHS_EJECT_OFFSET, 0.0, 0.0);
+        Vec3 spawn = Vec3.atCenterOf(this.depthsPos).add(DEPTHS_EJECT_OFFSET, -1.0, 0.0);
         player.fallDistance = 0f;
         player.teleportTo(depths, spawn.x, spawn.y, spawn.z, player.getYRot(), player.getXRot());
         player.fallDistance = 0f;

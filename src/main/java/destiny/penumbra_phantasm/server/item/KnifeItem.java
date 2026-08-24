@@ -114,6 +114,12 @@ public class KnifeItem extends SwordItem {
             return InteractionResultHolder.pass(stack);
         }
 
+        //Cancel making a fountain in depths
+        if (DarkWorldUtil.isDepths(level)) {
+            player.displayClientMessage(Component.translatable("message.penumbra_phantasm.making_fountain_inside_depths"), true);
+            return InteractionResultHolder.fail(stack);
+        }
+
         //Cancel making a fountain in dark worlds
         if (DarkWorldUtil.isDarkWorld(level)) {
             player.displayClientMessage(Component.translatable("message.penumbra_phantasm.making_fountain_inside_dark_world"), true);
@@ -540,7 +546,7 @@ public class KnifeItem extends SwordItem {
             if (DarkFountain.isDepthsXzOccupied(depths, depthsX, depthsZ)) {
                 lightCap.removeDarkFountain(level, fountainPos);
                 darkCap.removeDarkFountain(targetLevel, darkFountainPos);
-                player.displayClientMessage(Component.translatable("message.penumbra_phantasm.making_fountain_depths_xz_occupied"), true);
+                player.displayClientMessage(Component.translatable("message.penumbra_phantasm.making_fountain_depths_conflict"), true);
                 resetMakingState(tag);
                 return;
             }
