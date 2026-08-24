@@ -85,8 +85,10 @@ public class SoulCapability implements INBTSerializable<CompoundTag> {
             }
         } else {
             if (determination > 0) {
-                if (level.getGameTime() % (5 * 20) == 0) {
-                    determination = determination - 1;
+                if (!player.isCreative() && !player.isSpectator()) {
+                    if (level.getGameTime() % (5 * 20) == 0) {
+                        determination = determination - 1;
+                    }
                 }
             } else {
                 if (level.getGameTime() % 60 == 0) {

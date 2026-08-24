@@ -1025,7 +1025,7 @@ public class DarkFountain {
         player.fallDistance = 0f;
         player.teleportTo(depths, spawn.x, spawn.y, spawn.z, player.getYRot(), player.getXRot());
         player.fallDistance = 0f;
-        player.setDeltaMovement(0.0, 0.0, 0.0);
+        player.setDeltaMovement(0.0, -10.0, 0.0);
         player.connection.send(new ClientboundSetEntityMotionPacket(player));
         depthsFountain.depthsTransit.add(player.getUUID());
         depthsFountain.teleportedEntities.add(player.getUUID());
