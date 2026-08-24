@@ -723,7 +723,7 @@ public class DarkWorldUtil
 
 	private static boolean isDarkWorldPath(String path)
 	{
-		return path.contains("dark_world") || path.contains("egg_room");
+		return path.contains("dark_world") || path.contains("egg_room") || path.contains("depths");
 	}
 
 	public static List<ServerLevel> getAllDarkWorlds(MinecraftServer server)
@@ -738,14 +738,23 @@ public class DarkWorldUtil
 		return darkWorlds;
 	}
 
+	public static final ResourceKey<Level> DEPTHS = ResourceKey.create(Registries.DIMENSION,
+			new ResourceLocation(PenumbraPhantasm.MODID, "depths"));
+
 	public static boolean isDepths(Level level)
 	{
-		return level.dimension().location().getPath().contains("the_depths");
+		return isDepthsKey(level.dimension());
 	}
 
 	public static boolean isDepthsKey(ResourceKey<Level> levelResourceKey)
 	{
-		return levelResourceKey.location().getPath().contains("the_depths");
+		return levelResourceKey.location().getPath().contains("depths");
+	}
+
+	@Nullable
+	public static ServerLevel getDepths(MinecraftServer server)
+	{
+		return server.getLevel(DEPTHS);
 	}
 
 	public static List<ResourceLocation> getAllDarkWorldAllowedRecipes(RegistryAccess registryAccess)

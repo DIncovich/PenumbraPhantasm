@@ -9,6 +9,7 @@ import destiny.penumbra_phantasm.server.capability.*;
 import destiny.penumbra_phantasm.server.fluid.PureDarknessFluidType;
 import destiny.penumbra_phantasm.server.fountain.GenericProvider;
 import destiny.penumbra_phantasm.server.egg.EggRoomUtil;
+import destiny.penumbra_phantasm.server.util.DarkWorldUtil;
 import destiny.penumbra_phantasm.server.item.EggItem;
 import destiny.penumbra_phantasm.server.item.ScarletBucketItem;
 import destiny.penumbra_phantasm.server.registry.*;
@@ -180,7 +181,7 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void onEggRoomFall(LivingFallEvent event) {
-        if (event.getEntity() instanceof Player player && EggRoomUtil.isEggRoom(player.level())) {
+        if (event.getEntity() instanceof Player player && (EggRoomUtil.isEggRoom(player.level()) || DarkWorldUtil.isDepths(player.level()))) {
             event.setCanceled(true);
             player.fallDistance = 0f;
         }

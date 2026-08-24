@@ -115,6 +115,10 @@ public class MusicManager {
             stopImmediately();
             return;
         }
+        if (DarkWorldUtil.isDepths(level)) {
+            stopImmediately();
+            return;
+        }
 
         LazyOptional<DarkFountainCapability> sealingLazyCap = level.getCapability(CapabilityRegistry.DARK_FOUNTAIN);
         if (sealingLazyCap.isPresent() && sealingLazyCap.resolve().isPresent()) {

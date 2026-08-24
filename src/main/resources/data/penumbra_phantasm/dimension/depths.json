@@ -1,0 +1,18 @@
+{
+  "type": "penumbra_phantasm:depths_dimension_type",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "penumbra_phantasm:challenger_dark",
+      "lakes": false,
+      "features": false,
+      "layers": [
+        {
+          "height": 1,
+          "block": "penumbra_phantasm:tenebralith"
+        }
+      ],
+      "structure_overrides": []
+    }
+  }
+}

@@ -53,6 +53,7 @@ import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import org.lwjgl.opengl.GL11;
 import destiny.penumbra_phantasm.PenumbraPhantasm;
 import destiny.penumbra_phantasm.client.render.FountainRenderUtil;
+import destiny.penumbra_phantasm.client.render.DepthsFountainSwirls;
 import destiny.penumbra_phantasm.client.render.screen.IntroScreen;
 import destiny.penumbra_phantasm.client.sound.MusicManager;
 import destiny.penumbra_phantasm.server.fountain.DarkFountain;
@@ -182,6 +183,33 @@ public class ClientEvents {
 							FountainRenderUtil.renderShockwaves(fountain, pose, buffer, OverlayTexture.NO_OVERLAY, partialTick);
 						}
 						pose.popPose();
+					} else if (DarkWorldUtil.isDepths(level)) {
+						pose.pushPose();
+						pose.translate(
+								fountain.getFountainPos().getX() - camera.getPosition().x(),
+								fountain.getFountainPos().getY() - camera.getPosition().y(),
+								fountain.getFountainPos().getZ() - camera.getPosition().z()
+						);
+
+						Vec2 fountain2dPos = new Vec2(fountain.getFountainPos().getX(), fountain.getFountainPos().getZ());
+						Vec2 camera2dPos = new Vec2((float) camera.getPosition().x, (float) camera.getPosition().z);
+						double distance2d = Mth.sqrt(fountain2dPos.distanceToSqr(camera2dPos));
+						double referenceDistance = 128;
+						float distanceScale = (float) (distance2d / referenceDistance);
+						distanceScale = Math.max(distanceScale, 1.0f);
+
+						pose.scale(distanceScale, distanceScale, distanceScale);
+
+						if (renderSkyPass) {
+							double fadeDistance = ClientConfig.fountainLodDistance;
+							float fade = (float) ((distance2d - fadeDistance) / fadeDistance);
+							fade = Math.max(0f, Math.min(1f, fade));
+							FountainRenderUtil.renderDepthsFountain(fountain, pose, buffer, camera, distance2d, partialTick, fade);
+						}
+						if (renderShockwavePass) {
+							FountainRenderUtil.renderDepthsFountainBeam(pose, buffer, camera, distance2d);
+						}
+						pose.popPose();
 					} else if (renderSkyPass) {
 						pose.pushPose();
 						pose.translate(
@@ -306,10 +334,16 @@ public class ClientEvents {
 
 			level.getCapability(CapabilityRegistry.DARK_FOUNTAIN).ifPresent(cap -> {
 				cap.darkFountains.forEach((pos, fountain) -> fountain.clientTickOpening());
+				if (DarkWorldUtil.isDepths(level)) {
+					DepthsFountainSwirls.tick(level, cap);
+				}
 			});
 
 			if (DarkWorldUtil.isDarkWorld(level)) {
 				Minecraft.getInstance().getMusicManager().stopPlaying();
+			}
+			if (DarkWorldUtil.isDepths(level)) {
+				return;
 			}
 
 			DarkFountainCapability cap;

@@ -21,6 +21,7 @@ import destiny.penumbra_phantasm.server.registry.*;
 import destiny.penumbra_phantasm.client.render.model.item.DeltashieldModel;
 import destiny.penumbra_phantasm.client.render.dimension.CardKingdomDimensionEffects;
 import destiny.penumbra_phantasm.client.render.dimension.DarkWorldDimensionEffects;
+import destiny.penumbra_phantasm.client.render.dimension.DepthsDimensionEffects;
 import destiny.penumbra_phantasm.client.render.dimension.EggRoomDimensionEffects;
 import destiny.penumbra_phantasm.client.render.item.DeltaShieldRenderer;
 import destiny.penumbra_phantasm.client.render.overlay.DarknessLandOverlay;
@@ -173,10 +174,12 @@ public class PenumbraPhantasm {
             DarkWorldDimensionEffects darkWorldDimensionEffects = new DarkWorldDimensionEffects();
             CardKingdomDimensionEffects cardKingdomDimensionEffects = new CardKingdomDimensionEffects();
             EggRoomDimensionEffects eggRoomDimensionEffects = new EggRoomDimensionEffects();
+            DepthsDimensionEffects depthsDimensionEffects = new DepthsDimensionEffects();
 
             event.register(DarkWorldDimensionEffects.DARK_WORLD_DIMENSION_EFFECTS, darkWorldDimensionEffects);
             event.register(CardKingdomDimensionEffects.CARD_KINGDOM_DIMENSION_EFFECTS, cardKingdomDimensionEffects);
             event.register(EggRoomDimensionEffects.EGG_ROOM_DIMENSION_EFFECTS, eggRoomDimensionEffects);
+            event.register(DepthsDimensionEffects.DEPTHS_DIMENSION_EFFECTS, depthsDimensionEffects);
         }
 
         @SubscribeEvent

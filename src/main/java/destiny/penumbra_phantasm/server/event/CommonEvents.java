@@ -63,6 +63,9 @@ public class CommonEvents {
         if (EggRoomUtil.isEggRoom(level)) {
             return;
         }
+        if (DarkWorldUtil.isDepths(level)) {
+            return;
+        }
         boolean noFountain = !DarkWorldUtil.levelHasDarkFountain(level);
         if (!noFountain) {
             return;

@@ -57,7 +57,7 @@ public class ScreenAnimationCapability implements INBTSerializable<CompoundTag> 
         {
             AtomicBoolean hasFountain = new AtomicBoolean(false);
             serverPlayer.level().getCapability(CapabilityRegistry.DARK_FOUNTAIN).ifPresent(cap -> hasFountain.set(!cap.darkFountains.isEmpty()));
-            if(DarkWorldUtil.isDarkWorldKey(serverPlayer.level().dimension()) && !EggRoomUtil.isEggRoomKey(serverPlayer.level().dimension()) && !hasFountain.get())
+            if(DarkWorldUtil.isDarkWorldKey(serverPlayer.level().dimension()) && !EggRoomUtil.isEggRoomKey(serverPlayer.level().dimension()) && !DarkWorldUtil.isDepthsKey(serverPlayer.level().dimension()) && !hasFountain.get())
             {
                 ServerLevel targetLevel = serverPlayer.getServer().getLevel(serverPlayer.getRespawnDimension());
                 BlockPos pos = serverPlayer.getRespawnPosition();

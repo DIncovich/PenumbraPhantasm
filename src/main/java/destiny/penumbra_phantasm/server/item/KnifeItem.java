@@ -120,6 +120,14 @@ public class KnifeItem extends SwordItem {
             return InteractionResultHolder.fail(stack);
         }
 
+        BlockPos occupancySeed = player.getOnPos().above();
+        if (DarkFountain.isDepthsXzOccupied(((ServerLevel) level).getServer(),
+                DarkFountain.scaledDepthsX(occupancySeed.getX()),
+                DarkFountain.scaledDepthsZ(occupancySeed.getZ()))) {
+            player.displayClientMessage(Component.translatable("message.penumbra_phantasm.making_fountain_depths_xz_occupied"), true);
+            return InteractionResultHolder.fail(stack);
+        }
+
         if (!SoulCapability.hasOwnSoulHearth(player)) {
             player.displayClientMessage(Component.translatable("message.penumbra_phantasm.making_fountain_no_soul_hearth"), true);
             return InteractionResultHolder.pass(stack);
@@ -524,6 +532,29 @@ public class KnifeItem extends SwordItem {
         }
 
         darkCap.addDarkFountain(darkFountainPos, targetLevel.dimension(), fountainPos, level.dimension(), 0, 0, 0, 0, new HashSet<>(), new ArrayList<>(), -1, -1, 0);
+
+        ServerLevel depths = DarkWorldUtil.getDepths(level.getServer());
+        if (depths != null) {
+            int depthsX = DarkFountain.scaledDepthsX(fountainPos.getX());
+            int depthsZ = DarkFountain.scaledDepthsZ(fountainPos.getZ());
+            if (DarkFountain.isDepthsXzOccupied(depths, depthsX, depthsZ)) {
+                lightCap.removeDarkFountain(level, fountainPos);
+                darkCap.removeDarkFountain(targetLevel, darkFountainPos);
+                player.displayClientMessage(Component.translatable("message.penumbra_phantasm.making_fountain_depths_xz_occupied"), true);
+                resetMakingState(tag);
+                return;
+            }
+            BlockPos depthsFountainPos = DarkFountain.resolveDepthsFountainPos(depths, fountainPos);
+            ResourceKey<Level> darkDimension = targetLevel.dimension();
+            depths.getCapability(CapabilityRegistry.DARK_FOUNTAIN).ifPresent(depthsCap -> {
+                depthsCap.addDarkFountain(depthsFountainPos, depths.dimension(), darkFountainPos, darkDimension,
+                        -1, 0, 0, 0, new HashSet<>(), new ArrayList<>(), -1, -1, 0);
+            });
+            DarkFountain darkFountain = darkCap.darkFountains.get(darkFountainPos);
+            if (darkFountain != null) {
+                darkFountain.depthsPos = depthsFountainPos;
+            }
+        }
 
         //If player is not creative, put cooldown on knife and drain determination
         if (!player.isCreative()) {

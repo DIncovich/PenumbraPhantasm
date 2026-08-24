@@ -16,6 +16,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import destiny.penumbra_phantasm.PenumbraPhantasm;
 import destiny.penumbra_phantasm.server.fountain.DarkFountain;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -51,6 +52,29 @@ public class FountainRenderUtil {
 	public static final float FOUNTAIN_SCREEN_TINT_FADE_END = 16f;
 
 	private static final float COS45 = 0.70710678f;
+
+	private static final ResourceLocation DEPTHS_OPENING = new ResourceLocation(PenumbraPhantasm.MODID, "textures/fountain/depths/fountain_opening.png");
+	private static final ResourceLocation DEPTHS_SWIRL = new ResourceLocation(PenumbraPhantasm.MODID, "textures/fountain/depths/fountain_swirl_part.png");
+	private static final ResourceLocation DEPTHS_SWIRL_SMALL = new ResourceLocation(PenumbraPhantasm.MODID, "textures/fountain/depths/fountain_swirl_small_part.png");
+	private static final ResourceLocation DEPTHS_VORTEX = new ResourceLocation(PenumbraPhantasm.MODID, "textures/fountain/depths/fountain_vortex.png");
+	private static final float DEPTHS_OPENING_PIXELS = 128f;
+	private static final float DEPTHS_SWIRL_PIXELS = 256f;
+	private static final float DEPTHS_VORTEX_PIXELS = 512f;
+
+	private static final float DEPTHS_SWIRL_SIZE_MUL = 2f;
+
+	private static final float DEPTHS_ALPHA_FLOOR = 0.25f;
+	private static final float DEPTHS_DIM_DISTANCE = 256;
+
+	private static final float DEPTHS_SWIRL_CULL_DISTANCE = 80f;
+	private static final float DEPTHS_SWIRL_FADE_START = 32f;
+
+	private static final float DEPTHS_VORTEX_Y = 4f;
+	private static final float DEPTHS_VORTEX_DEG_PER_TICK = 6f;
+
+	private static final float DEPTHS_BEAM_TOP_HALF = 2f;
+	private static final float DEPTHS_BEAM_BOTTOM_HALF = 5f;
+	private static final float DEPTHS_BEAM_LENGTH = 48f;
 
 	public static float openingPosterizeLumaThresholdForCameraBlockLight(Level level, Vec3 cameraPos, float baseThreshold) {
 		int blockLight = level.getBrightness(LightLayer.BLOCK, BlockPos.containing(cameraPos));
@@ -758,6 +782,90 @@ public class FountainRenderUtil {
 		poseStack.translate(0f, -1.95f, 0f);
 		getCrackModel().renderToBuffer(poseStack, buffer.getBuffer(RenderTypes.fountain(textureCrack)),
 				LightTexture.FULL_BRIGHT, overlay, 1F, 1F, 1F, 1F);
+		poseStack.popPose();
+	}
+
+	public static void renderDepthsFountain(DarkFountain fountain, PoseStack poseStack, MultiBufferSource buffer, Camera camera, double distance2d, float partialTick, float lodFade) {
+		float dim = (float) Mth.clamp(DEPTHS_DIM_DISTANCE / Math.max(distance2d, DEPTHS_DIM_DISTANCE), DEPTHS_ALPHA_FLOOR, 1.0);
+		poseStack.pushPose();
+		poseStack.translate(0.5f, 0.5f, 0.5f);
+
+		renderDepthsHorizontalPlane(poseStack, buffer.getBuffer(RenderTypes.fountainNoCull(DEPTHS_OPENING)),
+				DEPTHS_OPENING_PIXELS / 16f, 0f, 1f, 1f, 1f, dim);
+
+		Level level = Minecraft.getInstance().level;
+		float vortexAlpha = dim * (1f - lodFade);
+		if (level != null && vortexAlpha > 0.01f) {
+			float vortexYaw = (level.getGameTime() + partialTick) * DEPTHS_VORTEX_DEG_PER_TICK;
+			poseStack.pushPose();
+			poseStack.translate(0f, DEPTHS_VORTEX_Y, 0f);
+			poseStack.mulPose(Axis.YP.rotationDegrees(vortexYaw));
+			renderDepthsHorizontalPlane(poseStack, buffer.getBuffer(RenderTypes.fountainNoCull(DEPTHS_VORTEX)),
+					DEPTHS_VORTEX_PIXELS / 16f, 0f, 1f, 1f, 1f, vortexAlpha);
+			poseStack.popPose();
+		}
+
+		if (distance2d < DEPTHS_SWIRL_CULL_DISTANCE) {
+			float swirlDim = (float) Mth.clamp(1.0 - (distance2d - DEPTHS_SWIRL_FADE_START) / (DEPTHS_SWIRL_CULL_DISTANCE - DEPTHS_SWIRL_FADE_START), 0.0, 1.0);
+			if (swirlDim > 0f) {
+				for (DepthsFountainSwirls.Swirl swirl : DepthsFountainSwirls.swirlsAt(fountain.getFountainPos())) {
+					float age = swirl.age + partialTick;
+					float t = Mth.clamp(age / swirl.lifetime, 0f, 1f);
+					float fadeIn = Mth.clamp(t / 0.15f, 0f, 1f);
+					float fadeOut = Mth.clamp((1f - t) / 0.3f, 0f, 1f);
+					float alpha = fadeIn * fadeOut * swirlDim;
+					if (alpha <= 0.01f) {
+						continue;
+					}
+					float size = (1f - t) * (DEPTHS_SWIRL_PIXELS / 16f) * DEPTHS_SWIRL_SIZE_MUL;
+					if (size <= 0.01f) {
+						continue;
+					}
+					float y = -Mth.lerp(t, swirl.startYOffset, 0f);
+					float yaw = swirl.yaw + swirl.spinSpeedDeg * partialTick;
+
+					poseStack.pushPose();
+					poseStack.translate(0f, y, 0f);
+					poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
+					ResourceLocation swirlTex = swirl.small ? DEPTHS_SWIRL_SMALL : DEPTHS_SWIRL;
+					renderDepthsHorizontalPlane(poseStack, buffer.getBuffer(RenderTypes.fountainNoCull(swirlTex)),
+							size, 0f, 1f, 1f, 1f, alpha * dim);
+					poseStack.popPose();
+				}
+			}
+		}
+
+		poseStack.popPose();
+	}
+
+	public static void renderDepthsFountainBeam(PoseStack poseStack, MultiBufferSource buffer, Camera camera, double distance2d) {
+		float dim = (float) Mth.clamp(DEPTHS_DIM_DISTANCE / Math.max(distance2d, DEPTHS_DIM_DISTANCE), DEPTHS_ALPHA_FLOOR, 1.0);
+		poseStack.pushPose();
+		poseStack.translate(0.5f, 0.5f, 0.5f);
+		renderDepthsBeam(poseStack, buffer.getBuffer(RenderTypes.fountainBeam()), camera, dim);
+		poseStack.popPose();
+	}
+
+	private static void renderDepthsHorizontalPlane(PoseStack poseStack, VertexConsumer consumer, float size, float y, float r, float g, float b, float a) {
+		Matrix4f matrix = poseStack.last().pose();
+		float h = size * 0.5f;
+		consumer.vertex(matrix, -h, y, -h).color(r, g, b, a).uv(0f, 0f).endVertex();
+		consumer.vertex(matrix, -h, y, h).color(r, g, b, a).uv(0f, 1f).endVertex();
+		consumer.vertex(matrix, h, y, h).color(r, g, b, a).uv(1f, 1f).endVertex();
+		consumer.vertex(matrix, h, y, -h).color(r, g, b, a).uv(1f, 0f).endVertex();
+	}
+
+	private static void renderDepthsBeam(PoseStack poseStack, VertexConsumer consumer, Camera camera, float alpha) {
+		poseStack.pushPose();
+		poseStack.mulPose(Axis.YP.rotationDegrees(-camera.getYRot()));
+		Matrix4f matrix = poseStack.last().pose();
+		float topH = DEPTHS_BEAM_TOP_HALF;
+		float botH = DEPTHS_BEAM_BOTTOM_HALF;
+		float down = DEPTHS_BEAM_LENGTH;
+		consumer.vertex(matrix, -topH, 0f, 0f).color(1f, 1f, 1f, alpha).endVertex();
+		consumer.vertex(matrix, topH, 0f, 0f).color(1f, 1f, 1f, alpha).endVertex();
+		consumer.vertex(matrix, botH, -down, 0f).color(1f, 1f, 1f, 0f).endVertex();
+		consumer.vertex(matrix, -botH, -down, 0f).color(1f, 1f, 1f, 0f).endVertex();
 		poseStack.popPose();
 	}
 }
