@@ -66,7 +66,7 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> EGG_ACQUIRE = registerSoundEvent("egg_acquire");
     public static RegistryObject<SoundEvent> TEXTBOX_GENERIC = registerSoundEvent("textbox_generic");
 
-    public static RegistryObject<SoundEvent> DEPTHS_ENTRY = registerSoundEvent("depths_entry");
+    public static RegistryObject<SoundEvent> DEPTHS_ENTER = registerSoundEvent("depths_enter");
     public static RegistryObject<SoundEvent> DEPTHS_AMBIENCE = registerSoundEvent("depths_ambience");
 
     private static RegistryObject<SoundEvent> registerSoundEvent(String sound)

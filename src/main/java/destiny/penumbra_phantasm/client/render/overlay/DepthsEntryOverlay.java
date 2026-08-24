@@ -32,8 +32,8 @@ public class DepthsEntryOverlay {
         if(lastTick == -1 || ticker == 0)
             lastTick = 0;
 
-        if (ticker == 4 && lastTick != 2) {
-            player.playSound(SoundRegistry.DEPTHS_ENTRY.get(), 1f, 1f);
+        if (ticker == 2 && lastTick != 2) {
+            player.playSound(SoundRegistry.DEPTHS_ENTER.get(), 0.75f, 1f);
         }
 
         lastTick = ticker;
