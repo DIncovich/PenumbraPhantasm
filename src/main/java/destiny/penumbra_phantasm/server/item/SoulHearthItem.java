@@ -93,6 +93,11 @@ public class SoulHearthItem extends Item {
 
         if (!DarkWorldUtil.isDarkWorld(level)) return InteractionResultHolder.pass(stack);
 
+        if (DarkWorldUtil.isDepths(level)) {
+            player.displayClientMessage(Component.translatable("message.penumbra_phantasm.sealing_fountain_depths"), true);
+            return InteractionResultHolder.pass(stack);
+        }
+
         if (stack.getTag() == null) return InteractionResultHolder.pass(stack);
 
         DarkFountainCapability darkFountainCapability = null;

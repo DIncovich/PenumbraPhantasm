@@ -311,5 +311,11 @@
     [
       "penumbra_phantasm:depths_enter"
     ]
+  },
+  "fountain_wind_depths": {
+    "sounds":
+    [
+      "penumbra_phantasm:fountain_wind_depths"
+    ]
   }
 }

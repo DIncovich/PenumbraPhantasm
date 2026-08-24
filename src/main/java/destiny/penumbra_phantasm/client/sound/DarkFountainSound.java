@@ -61,9 +61,16 @@ public class DarkFountainSound<T extends DarkFountain> extends AbstractTickableS
                 Vec3 playerPos2d = new Vec3(playerPos.x, 0f, playerPos.z);
                 Vec3 fountainPos2d = new Vec3(fountainPos.getX(), 0, fountainPos.getZ());
 
-                return  fountainPos2d.distanceTo(playerPos2d);
+                return fountainPos2d.distanceTo(playerPos2d);
             }
         }
+    }
+
+    public double getDistanceFromSource3d() {
+        LocalPlayer player = minecraft.player;
+        Vec3 playerPos = player.position();
+
+        return fountainPos.getCenter().distanceTo(playerPos);
     }
 
     public float getVolume()

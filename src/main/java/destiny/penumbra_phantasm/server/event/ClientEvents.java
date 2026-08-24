@@ -332,12 +332,14 @@ public class ClientEvents {
 				}
 			}
 
-			level.getCapability(CapabilityRegistry.DARK_FOUNTAIN).ifPresent(cap -> {
-				cap.darkFountains.forEach((pos, fountain) -> fountain.clientTickOpening());
-				if (DarkWorldUtil.isDepths(level)) {
-					DepthsFountainSwirls.tick(level, cap);
-				}
-			});
+			if (!Minecraft.getInstance().isPaused()) {
+				level.getCapability(CapabilityRegistry.DARK_FOUNTAIN).ifPresent(cap -> {
+					cap.darkFountains.forEach((pos, fountain) -> fountain.clientTickOpening());
+					if (DarkWorldUtil.isDepths(level)) {
+						DepthsFountainSwirls.tick(level, cap);
+					}
+				});
+			}
 
 			if (DarkWorldUtil.isDarkWorld(level)) {
 				Minecraft.getInstance().getMusicManager().stopPlaying();

@@ -9,7 +9,7 @@
       "layers": [
         {
           "height": 1,
-          "block": "penumbra_phantasm:tenebralith_path"
+          "block": "penumbra_phantasm:tenebralith"
         }
       ],
       "structure_overrides": []

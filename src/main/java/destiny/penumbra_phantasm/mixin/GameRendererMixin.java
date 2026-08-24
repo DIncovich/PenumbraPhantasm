@@ -13,6 +13,7 @@ import destiny.penumbra_phantasm.client.render.textbox.DarkWorldDialogue;
 import destiny.penumbra_phantasm.client.render.textbox.DarkWorldTextBox;
 import destiny.penumbra_phantasm.server.egg.EggRoomUtil;
 import destiny.penumbra_phantasm.server.registry.CapabilityRegistry;
+import destiny.penumbra_phantasm.server.util.DarkWorldUtil;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -86,6 +87,14 @@ public class GameRendererMixin {
 			if (darknessOverlayTicker > 0) {
 				fountainAlpha = Math.min(Mth.lerp(darknessOverlayTicker / 100f, 0f, 3f), 2.5f);
 			}
+
+			float erosionAlpha = 0f;
+			int determination = minecraft.player.getCapability(CapabilityRegistry.SOUL).resolve().map(c -> c.determination).orElse(100);
+			if (DarkWorldUtil.isDepths(minecraft.level) && determination <= 25) {
+				float progress = (25 - determination) / 25f;
+				erosionAlpha = Math.min(Mth.lerp(progress, 0f, 1f), 2.5f);
+			}
+			fountainAlpha = Math.max(fountainAlpha, erosionAlpha);
 
 			sealShineTick = minecraft.player.getCapability(CapabilityRegistry.SCREEN_ANIMATION).resolve().map(c -> c.sealShineTicker).orElse(-1);
 		}

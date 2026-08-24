@@ -78,7 +78,7 @@ public class DarkFountain {
 
     public static final double DEPTHS_CONTACT_XZ = 3;
     public static final double DEPTHS_CONTACT_Y = 1;
-    public static final double DEPTHS_EJECT_OFFSET = 0.45;
+    public static final double DEPTHS_EJECT_OFFSET = -0.45;
 
     public BlockPos fountainPos;
     public ResourceKey<Level> fountainDimension;
@@ -282,7 +282,7 @@ public class DarkFountain {
                 this.openingTick++;
             }
 
-            if (!DarkWorldUtil.isDepths(level) && (this.openingTick > 125 || this.openingTick == -1) && this.sealingTick < 0) {
+            if ((this.openingTick > 125 || this.openingTick == -1) && this.sealingTick < 0) {
                 tickSoundPackets(level);
             }
         }
@@ -1188,7 +1188,12 @@ public class DarkFountain {
     }
 
     private void tickSoundPackets(Level level) {
-        if (DarkWorldUtil.isDarkWorld(level)) {
+        if (DarkWorldUtil.isDepths(level)) {
+            PacketHandlerRegistry.INSTANCE.send(
+                    PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.getFountainPos())),
+                    new ClientBoundSoundPackets.FountainWindDepths(this.fountainPos, false)
+            );
+        } else if (DarkWorldUtil.isDarkWorld(level)) {
             PacketHandlerRegistry.INSTANCE.send(
                     PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.getFountainPos())),
                     new ClientBoundSoundPackets.FountainWind(this.fountainPos, false));
