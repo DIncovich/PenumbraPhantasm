@@ -317,5 +317,13 @@
     [
       "penumbra_phantasm:fountain_wind_depths"
     ]
+  },
+  "depths_thunder": {
+    "sounds":
+    [
+      "penumbra_phantasm:depths_thunder_1",
+      "penumbra_phantasm:depths_thunder_2",
+      "penumbra_phantasm:depths_thunder_3"
+    ]
   }
 }

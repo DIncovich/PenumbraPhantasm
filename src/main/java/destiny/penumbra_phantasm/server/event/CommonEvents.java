@@ -12,6 +12,7 @@ import destiny.penumbra_phantasm.server.fountain.DarkFountain;
 import destiny.penumbra_phantasm.server.item.FractalMirrorItem;
 import destiny.penumbra_phantasm.server.transformations.inventory.StorageData;
 import destiny.penumbra_phantasm.server.util.DarkWorldUtil;
+import destiny.penumbra_phantasm.server.util.DepthsSkyLightning;
 import destiny.penumbra_phantasm.server.fountain.GreatDoor;
 import destiny.penumbra_phantasm.server.registry.*;
 import net.minecraft.core.BlockPos;
@@ -217,6 +218,7 @@ public class CommonEvents {
             });
 
             if (level instanceof ServerLevel serverLevel) {
+                DepthsSkyLightning.tick(serverLevel);
                 EggRoomManager.tickPendingDoors(serverLevel);
                 level.getCapability(CapabilityRegistry.GREAT_DOOR).ifPresent(cap -> {
                     for (GreatDoor greatDoor : new ArrayList<>(cap.greatDoors.values())) {

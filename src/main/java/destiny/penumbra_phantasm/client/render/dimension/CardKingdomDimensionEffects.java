@@ -470,7 +470,7 @@ public class CardKingdomDimensionEffects extends DarkWorldDimensionEffects {
         return mixSeed(level.dimension().location().toString().hashCode());
     }
 
-    private static long mixSeed(long seed) {
+    public static long mixSeed(long seed) {
         long mixed = seed;
         
         mixed ^= mixed >>> 33;
