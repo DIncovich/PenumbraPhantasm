@@ -311,7 +311,7 @@
   "block.penumbra_phantasm.great_door_spawner": "Спавнер Великой двери",
   "block.penumbra_phantasm.great_door_shape": "Великая дверь",
   "block.penumbra_phantasm.fire_door": "Огненная дверь",
-  "block.penumbra_phantasm.cheshire_chest": "Чеширский сундук",
+  "block.penumbra_phantasm.cheshire_chest": "Сундук Чешира",
 
   "block.penumbra_phantasm.umbrastone_rosegold_ore": "Умбровая розовая золотая руда",
 
@@ -441,7 +441,7 @@
   "gui.penumbra_phantasm.dark_world_inventory_title": "ИНВЕНТАРЬ",
   "gui.penumbra_phantasm.dark_world_inventory_crafting": "КРАФТ",
   "gui.penumbra_phantasm.dark_world_inventory_equipped": "СНАРЯЖ.",
-  "gui.penumbra_phantasm.cheshire_chest": "§eЧЕШИР.§r §dСУНДУК§r",
+  "gui.penumbra_phantasm.cheshire_chest": "§eСУНДУК§r §dЧЕШИРА§r",
   "gui.penumbra_phantasm.umbrastone_furnace": " УМБРОВАЯ ПЕЧЬ",
   "gui.penumbra_phantasm.dark_candy_crafting_table": "  ВЕРСТАК ИЗ Т.-К. ДЕРЕВА",
 
