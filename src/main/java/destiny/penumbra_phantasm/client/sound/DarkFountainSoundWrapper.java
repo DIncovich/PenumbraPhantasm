@@ -70,6 +70,17 @@ public abstract class DarkFountainSoundWrapper<T extends DarkFountain> extends S
         }
     }
 
+    public static class DarkFountainWindDepths extends DarkFountainSoundWrapper<DarkFountain> {
+        public DarkFountainWindDepths(DarkFountain fountain) {
+            super(fountain, new DarkFountainWindDepthsSound(fountain, SoundAccess.getFountainWindDepths()));
+        }
+
+        @Override
+        protected DarkFountainSound<DarkFountain> newSoundInstance() {
+            return new DarkFountainWindDepthsSound(fountain, SoundAccess.getFountainWindDepths());
+        }
+    }
+
     public static class DarkFountainDarkness extends DarkFountainSoundWrapper<DarkFountain> {
         public DarkFountainDarkness(DarkFountain fountain) {
             super(fountain, new DarkFountainDarknessSound(fountain, SoundAccess.getFountainDarkness()));

@@ -28,6 +28,8 @@ public class FractalMirrorItem extends Item
 			StorageData data = StorageData.get(serverLevel);
 			data.getInventory(player.getUUID()).swap(((ServerPlayer) player), true);
 			data.setDirty();
+
+			return InteractionResultHolder.success(stack);
 		}
 
 		return InteractionResultHolder.fail(stack);

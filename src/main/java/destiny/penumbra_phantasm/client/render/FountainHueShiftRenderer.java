@@ -44,7 +44,7 @@ public final class FountainHueShiftRenderer {
 
         ClientLevel level = minecraft.level;
 
-        if (!DarkWorldUtil.isDarkWorld(level)) return;
+        if (!DarkWorldUtil.isDarkWorld(level) || DarkWorldUtil.isDepths(level)) return;
 
         Vec3 camPos = gameRenderer.getMainCamera().getPosition();
         DarkFountain fountain = getClosestFountain(level, camPos);

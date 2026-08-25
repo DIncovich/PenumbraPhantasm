@@ -59,6 +59,8 @@
   "item.penumbra_phantasm.luminescent_water_bucket": "Luminescent Water Bucket",
   "item.penumbra_phantasm.pure_darkness_bucket": "Pure Darkness Bucket",
 
+  "item.penumbra_phantasm.egg": "Egg",
+
   "block.penumbra_phantasm.twilight_grass": "Twilight Grass",
   "block.penumbra_phantasm.twilight_grass_block": "Twilight Grass Block",
   "block.penumbra_phantasm.night_grass": "Night Grass",
@@ -352,6 +354,9 @@
   "block.penumbra_phantasm.ivory_brick_button": "Ivory Brick Button",
   "block.penumbra_phantasm.ivory_brick_pressure_plate": "Ivory Brick Pressure Plate",
 
+  "block.penumbra_phantasm.scarlet_log_mysterious_door": "Mysterious Door",
+  "block.penumbra_phantasm.unbreakable_darkness": "Darkness",
+
   "itemGroup.penumbra_phantasm.main": "PENUMBRA PHANTASM",
   "itemGroup.penumbra_phantasm.card_kingdom": "CARD KINGDOM",
   "itemGroup.penumbra_phantasm.the_depths": "THE DEPTHS",
@@ -372,6 +377,8 @@
   "advancement.penumbra_phantasm.dark_fountain_make.description": "Make a Dark Fountain",
   "advancement.penumbra_phantasm.card_kingdom_visit.title": "Full House",
   "advancement.penumbra_phantasm.card_kingdom_visit.description": "Visit the Card Kingdom dark world",
+  "advancement.penumbra_phantasm.egg_room_card_kingdom.title": "He is Behind the Tree",
+  "advancement.penumbra_phantasm.egg_room_card_kingdom.description": "Find an Egg Room",
   "advancement.penumbra_phantasm.scarlet_tree.title": "Behind The Tree",
   "advancement.penumbra_phantasm.scarlet_tree.description": "Find a Scarlet Tree",
   "advancement.penumbra_phantasm.dark_candy.title": "Disintegratingly Sweet",
@@ -395,7 +402,7 @@
   "advancement.penumbra_phantasm.dark_fountain_seal.title": "The Light Inside Your SOUL",
   "advancement.penumbra_phantasm.dark_fountain_seal.description": "Seal a Dark Fountain",
   "advancement.penumbra_phantasm.depths.title": "Dark, Darker Yet Darker",
-  "advancement.penumbra_phantasm.depths.description": "Visit the DEPTHS",
+  "advancement.penumbra_phantasm.depths.description": "Fall into THE DEPTHS",
   "advancement.penumbra_phantasm.erosion_death.title": "Overwhelming Darkness",
   "advancement.penumbra_phantasm.erosion_death.description": "Die from Erosion",
 
@@ -438,6 +445,9 @@
   "gui.penumbra_phantasm.umbrastone_furnace": "UMBRASTONE FURNACE",
   "gui.penumbra_phantasm.dark_candy_crafting_table": "DARK CANDY CRAFTING TABLE",
 
+  "gui.penumbra_phantasm.textbox.yes": "Yes",
+  "gui.penumbra_phantasm.textbox.no": "No",
+
   "location.penumbra_phantasm.dark_fountain": "Dark Fountain",
   "location.penumbra_phantasm.dark_fountain.description": "'The geyser that gives this land form...'",
 
@@ -449,20 +459,27 @@
   "biome.penumbra_phantasm.scarlet_forest.description": "'The forest of eternal autumn'",
   "biome.penumbra_phantasm.cliffs": "??????",
   "biome.penumbra_phantasm.cliffs.description": "'Only eyes blinded by darkness can see the way...'",
+  "biome.penumbra_phantasm.challenger_dark": "CHALLENGER DARK",
+  "biome.penumbra_phantasm.challenger_dark.description": "'A realm of darkest ire, with fantasy as a disguise...'",
+
+  "biome.penumbra_phantasm.egg_room_card_kingdom": "Egg Room",
 
   "message.penumbra_phantasm.making_fountain_no_soul_hearth": "No SOUL Hearth...",
   "message.penumbra_phantasm.making_fountain_not_enough_determination": "Not enough DETERMINATION to pierce...",
   "message.penumbra_phantasm.making_fountain_invalid_position": "Must be standing on a full block",
   "message.penumbra_phantasm.making_fountain_not_enough_key_blocks": "Not enough blocks to power your imagination...",
   "message.penumbra_phantasm.making_fountain_inside_dark_world": "You feel like that's not a good idea...",
+  "message.penumbra_phantasm.making_fountain_inside_depths": "...But pierce to where?",
   "message.penumbra_phantasm.making_fountain_unsealed_or_too_big": "The room is unsealed or too big",
   "message.penumbra_phantasm.making_fountain_room_has_active_fountain": "A fountain is already in this room",
+  "message.penumbra_phantasm.making_depths_conflict": "A fountain on this position already stirs somewhere else...",
   "message.penumbra_phantasm.making_fountain_critical_error": "Couldn't make a fountain due to an error, please reach out to the developer!",
   "message.penumbra_phantasm.pushed_away_by_fountain": "The flow of darkness pushes you away...",
   "message.penumbra_phantasm.soul_hearth_reject": "The SOUL within rejects you.",
   "message.penumbra_phantasm.sealing_fountain_no_fountain_nearby": "But there was no fountain nearby...",
   "message.penumbra_phantasm.sealing_fountain_not_enough_determination": "But you weren't DETERMINED enough...",
   "message.penumbra_phantasm.sealing_fountain_already_being_sealed": "But the fountain was already being sealed...",
+  "message.penumbra_phantasm.sealing_fountain_depths": "But your SOUL could not shine through the dark...",
   "message.penumbra_phantasm.dark_world_without_fountain": "The dark world you were in didn't have an active fountain",
   "message.penumbra_phantasm.great_door_cant_open_no_light_door": "But the door wouldn't budge... (No unclaimed doors in the fountain rooms)",
   "message.penumbra_phantasm.great_door_cant_open_no_fountain": "But the door wouldn't budge... (This dark world doesn't have a fountain)",
@@ -482,6 +499,7 @@
   "death.attack.penumbra_phantasm.injection_overdose": "%1$s was too DETERMINED and melted into goop",
   "death.attack.penumbra_phantasm.injection_overdose.player": "%1$s was made too DETERMINED by %2$s and melted into goop",
   "death.attack.penumbra_phantasm.soul_damage": "%1$s couldn't rip out their SOUL",
+  "death.attack.penumbra_phantasm.erosion": "%1$s's DETERMINATION was crushed by darkness",
 
   "container.penumbra_phantasm.umbrastone_furnace": "Umbrastone Furnace",
   "container.penumbra_phantasm.dark_world_inventory.narration.button.usage.hover": "LEFT CLICK TO SWITCH TO %s",
@@ -529,5 +547,20 @@
   "screen.penumbra_phantasm.intro.line.26": "W I T H   T H E   P O W E R",
   "screen.penumbra_phantasm.intro.line.27": "O F   < D E L T A R U N E . >",
   "screen.penumbra_phantasm.intro.line.28": "S T E P   F O R T H",
-  "screen.penumbra_phantasm.intro.line.29": "I N T O   T H I S   W O R L D !"
+  "screen.penumbra_phantasm.intro.line.29": "I N T O   T H I S   W O R L D !",
+
+  "key.categories.penumbra_phantasm": "PENUMBRA PHANTASM",
+  "key.penumbra_phantasm.confirm": "Confirm",
+  "key.penumbra_phantasm.confirm_alt": "Confirm (Alt)",
+  "key.penumbra_phantasm.cancel": "Cancel",
+  "key.penumbra_phantasm.cancel_alt": "Cancel (Alt)",
+
+  "textbox.penumbra_phantasm.egg.he_is_behind": "(He is behind the tree.)",
+  "textbox.penumbra_phantasm.egg.it_is_a_tree": "(It is a tree.)",
+  "textbox.penumbra_phantasm.egg.man_here": "(Well, there is a man here.)",
+  "textbox.penumbra_phantasm.egg.offered": "(He offered you something.)",
+  "textbox.penumbra_phantasm.egg.no_man": "(Well, there is not a man here.)",
+  "textbox.penumbra_phantasm.egg.received": "(You received an Egg.)",
+  "textbox.penumbra_phantasm.egg.neednt": "(Then he needn't be here.)",
+  "textbox.penumbra_phantasm.egg.used": "(You used the Egg.)"
 }

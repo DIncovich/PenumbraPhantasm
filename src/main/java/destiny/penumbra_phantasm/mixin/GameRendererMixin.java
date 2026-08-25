@@ -9,11 +9,17 @@ import destiny.penumbra_phantasm.client.render.FountainOpeningPosterizeRenderer;
 import destiny.penumbra_phantasm.client.render.RenderBlitUtil;
 import destiny.penumbra_phantasm.client.render.overlay.FountainDarknessOverlay;
 import destiny.penumbra_phantasm.client.render.screen.IntroScreen;
+import destiny.penumbra_phantasm.client.render.textbox.DarkWorldDialogue;
+import destiny.penumbra_phantasm.client.render.textbox.DarkWorldTextBox;
+import destiny.penumbra_phantasm.server.egg.EggRoomUtil;
 import destiny.penumbra_phantasm.server.registry.CapabilityRegistry;
+import destiny.penumbra_phantasm.server.util.DarkWorldUtil;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,6 +30,33 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
+	@Inject(method = "renderItemInHand", at = @At("HEAD"), cancellable = true)
+	private void penumbraPhantasm$hideEggRoomHands(PoseStack poseStack, Camera camera, float partialTick, CallbackInfo ci) {
+		if (penumbraPhantasm$inEggRoom()) {
+			ci.cancel();
+		}
+	}
+
+	@Inject(method = "bobView", at = @At("HEAD"), cancellable = true)
+	private void penumbraPhantasm$skipEggRoomBobView(PoseStack poseStack, float partialTick, CallbackInfo ci) {
+		if (penumbraPhantasm$inEggRoom()) {
+			ci.cancel();
+		}
+	}
+
+	@Inject(method = "bobHurt", at = @At("HEAD"), cancellable = true)
+	private void penumbraPhantasm$skipEggRoomBobHurt(PoseStack poseStack, float partialTick, CallbackInfo ci) {
+		if (penumbraPhantasm$inEggRoom()) {
+			ci.cancel();
+		}
+	}
+
+	@Unique
+	private static boolean penumbraPhantasm$inEggRoom() {
+		Level level = Minecraft.getInstance().level;
+		return level != null && EggRoomUtil.isEggRoom(level);
+	}
+
 	@Inject(method = "render", at = @At("TAIL"))
 	private void renderDarknessOverlays(float partialTick, long nanoTime, boolean renderLevel, CallbackInfo ci) {
 		Minecraft minecraft = Minecraft.getInstance();
@@ -55,10 +88,22 @@ public class GameRendererMixin {
 				fountainAlpha = Math.min(Mth.lerp(darknessOverlayTicker / 100f, 0f, 3f), 2.5f);
 			}
 
+			float erosionAlpha = 0f;
+			int determination = minecraft.player.getCapability(CapabilityRegistry.SOUL).resolve().map(c -> c.determination).orElse(100);
+			if (DarkWorldUtil.isDepths(minecraft.level) && determination <= 25) {
+				float progress = (25 - determination) / 25f;
+				erosionAlpha = Math.min(Mth.lerp(progress, 0f, 1f), 2.5f);
+			}
+			fountainAlpha = Math.max(fountainAlpha, erosionAlpha);
+
 			sealShineTick = minecraft.player.getCapability(CapabilityRegistry.SCREEN_ANIMATION).resolve().map(c -> c.sealShineTicker).orElse(-1);
 		}
 
-		if (landAlpha == 0f && fountainAlpha == 0f && sealShineTick < 0) return;
+		boolean drawTextBox = minecraft.screen == null && DarkWorldDialogue.isActive() && DarkWorldDialogue.writer() != null;
+		boolean drawDarkness = landAlpha != 0f || fountainAlpha != 0f || sealShineTick >= 0;
+		if (!drawTextBox && !drawDarkness) {
+			return;
+		}
 
 		int width = minecraft.getWindow().getGuiScaledWidth();
 		int height = minecraft.getWindow().getGuiScaledHeight();
@@ -82,6 +127,9 @@ public class GameRendererMixin {
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
+		if (drawTextBox) {
+			DarkWorldTextBox.render(graphics, DarkWorldDialogue.writer(), width, height);
+		}
 		renderLandScreenFadeOut(graphics, width, height, landAlpha);
 		renderTransitionFadeOut(graphics, width, height, fountainAlpha);
 		PoseStack sealShinePose = new PoseStack();

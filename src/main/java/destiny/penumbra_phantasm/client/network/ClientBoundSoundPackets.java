@@ -80,6 +80,28 @@ public abstract class ClientBoundSoundPackets {
         }
     }
 
+    public static class FountainWindDepths extends ClientBoundSoundPackets
+    {
+        public FountainWindDepths(BlockPos fountainPos, boolean stop)
+        {
+            super(fountainPos, stop);
+        }
+        public FountainWindDepths(FriendlyByteBuf buffer)
+        {
+            super(buffer);
+        }
+
+        @Override
+        public boolean handle(Supplier<NetworkEvent.Context> ctx)
+        {
+            ctx.get().enqueueWork(() ->
+            {
+                SoundAccess.playFountainWindDepths(fountainPos, stop);
+            });
+            return true;
+        }
+    }
+
     public static class FountainDarkness extends ClientBoundSoundPackets
     {
         public FountainDarkness(BlockPos fountainPos, boolean stop)

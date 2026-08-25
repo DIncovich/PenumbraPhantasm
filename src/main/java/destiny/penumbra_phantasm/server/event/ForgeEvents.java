@@ -8,6 +8,9 @@ import destiny.penumbra_phantasm.server.block.LuminescentWaterFluidBlock;
 import destiny.penumbra_phantasm.server.capability.*;
 import destiny.penumbra_phantasm.server.fluid.PureDarknessFluidType;
 import destiny.penumbra_phantasm.server.fountain.GenericProvider;
+import destiny.penumbra_phantasm.server.egg.EggRoomUtil;
+import destiny.penumbra_phantasm.server.util.DarkWorldUtil;
+import destiny.penumbra_phantasm.server.item.EggItem;
 import destiny.penumbra_phantasm.server.item.ScarletBucketItem;
 import destiny.penumbra_phantasm.server.registry.*;
 import net.minecraft.core.BlockPos;
@@ -34,8 +37,11 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -172,5 +178,77 @@ public class ForgeEvents {
                 event.setCanceled(true);
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onLivingHeal(LivingHealEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+        if (player.hasEffect(net.minecraft.world.effect.MobEffects.REGENERATION)
+                || player.hasEffect(net.minecraft.world.effect.MobEffects.HEAL)) {
+            return;
+        }
+        if (event.getAmount() > 1.0F) {
+            return;
+        }
+
+        if (!DarkWorldUtil.isDepths(player.level())) return;
+
+        player.getCapability(CapabilityRegistry.SOUL).ifPresent(cap -> {
+            int determination = cap.determination;
+
+            if (determination <= 0) {
+                event.setAmount(event.getAmount() * 0);
+            }
+        });
+    }
+
+    @SubscribeEvent
+    public static void onEggRoomFall(LivingFallEvent event) {
+        if (event.getEntity() instanceof Player player && (EggRoomUtil.isEggRoom(player.level()) || DarkWorldUtil.isDepths(player.level()))) {
+            event.setCanceled(true);
+            player.fallDistance = 0f;
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEggRoomBreak(BlockEvent.BreakEvent event) {
+        if (EggRoomUtil.isEggRoom(event.getPlayer().level())) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEggRoomPlace(BlockEvent.EntityPlaceEvent event) {
+        if (event.getLevel() instanceof Level level && EggRoomUtil.isEggRoom(level)) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEggRoomLeftClick(PlayerInteractEvent.LeftClickBlock event) {
+        if (EggRoomUtil.isEggRoom(event.getLevel())) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEggRoomRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        if (!EggRoomUtil.isEggRoom(event.getLevel())) {
+            return;
+        }
+        event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void onEggRoomRightClickItem(PlayerInteractEvent.RightClickItem event) {
+        if (!EggRoomUtil.isEggRoom(event.getLevel())) {
+            return;
+        }
+        if (event.getItemStack().getItem() instanceof EggItem) {
+            return;
+        }
+        event.setCanceled(true);
     }
 }

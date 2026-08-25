@@ -13,7 +13,12 @@ import destiny.penumbra_phantasm.client.render.GreatDoorRenderUtil;
 import destiny.penumbra_phantasm.client.render.screen.DarkWorldInventoryScreen;
 import destiny.penumbra_phantasm.client.render.screen.DarkWorldLanScreen;
 import destiny.penumbra_phantasm.client.render.screen.DarkWorldPauseScreen;
+import destiny.penumbra_phantasm.client.render.screen.EggRoomCoverScreen;
+import destiny.penumbra_phantasm.client.render.screen.IntroScreen;
+import destiny.penumbra_phantasm.client.KeyBindings;
+import destiny.penumbra_phantasm.client.render.textbox.DarkWorldDialogue;
 import destiny.penumbra_phantasm.server.capability.SoulCapability;
+import destiny.penumbra_phantasm.server.egg.EggRoomUtil;
 import destiny.penumbra_phantasm.server.fountain.GreatDoor;
 import destiny.penumbra_phantasm.server.util.DarkWorldUtil;
 import net.minecraft.Util;
@@ -22,6 +27,7 @@ import net.minecraft.client.Options;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.PauseScreen;
+import net.minecraft.client.gui.screens.ReceivingLevelScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.ShareToLanScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -50,25 +56,34 @@ import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import org.lwjgl.opengl.GL11;
 import destiny.penumbra_phantasm.PenumbraPhantasm;
 import destiny.penumbra_phantasm.client.render.FountainRenderUtil;
-import destiny.penumbra_phantasm.client.render.screen.IntroScreen;
+import destiny.penumbra_phantasm.client.render.DepthsFountainSwirls;
 import destiny.penumbra_phantasm.client.sound.MusicManager;
 import destiny.penumbra_phantasm.server.fountain.DarkFountain;
 import destiny.penumbra_phantasm.server.capability.DarkFountainCapability;
+import destiny.penumbra_phantasm.server.network.ServerBoundTextBoxPacket;
 import destiny.penumbra_phantasm.server.registry.CapabilityRegistry;
+import destiny.penumbra_phantasm.server.registry.PacketHandlerRegistry;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.level.ChunkEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -91,6 +106,24 @@ public class ClientEvents {
 	private static long lastHealthTime = 0L;
 	private static long healthBlinkTime = 0L;
 	private static final Random random = new Random();
+	private static ResourceKey<Level> lastClientDim;
+	private static int eggRoomRebuildLeft;
+
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public static void eggRoomCameraAngles(ViewportEvent.ComputeCameraAngles event) {
+		LocalPlayer player = Minecraft.getInstance().player;
+		if (player == null || !EggRoomUtil.isEggRoom(player.level())) {
+			return;
+		}
+		float partialTick = (float) event.getPartialTick();
+		double targetX = Mth.lerp(partialTick, player.xo, player.getX());
+		double targetY = Mth.lerp(partialTick, player.yo, player.getY()) + player.getEyeHeight();
+		double targetZ = Mth.lerp(partialTick, player.zo, player.getZ());
+		Vec2 look = EggRoomUtil.cameraLook(EggRoomUtil.CAMERA_X, EggRoomUtil.CAMERA_Y, EggRoomUtil.CAMERA_Z, targetX, targetY, targetZ);
+		event.setYaw(look.x);
+		event.setPitch(look.y);
+		event.setRoll(0f);
+	}
 
 	@SubscribeEvent
 	public static void levelRender(RenderLevelStageEvent event) {
@@ -150,6 +183,33 @@ public class ClientEvents {
 
 						if (renderShockwavePass) {
 							FountainRenderUtil.renderShockwaves(fountain, pose, buffer, OverlayTexture.NO_OVERLAY, partialTick);
+						}
+						pose.popPose();
+					} else if (DarkWorldUtil.isDepths(level)) {
+						pose.pushPose();
+						pose.translate(
+								fountain.getFountainPos().getX() - camera.getPosition().x(),
+								fountain.getFountainPos().getY() - camera.getPosition().y(),
+								fountain.getFountainPos().getZ() - camera.getPosition().z()
+						);
+
+						Vec2 fountain2dPos = new Vec2(fountain.getFountainPos().getX(), fountain.getFountainPos().getZ());
+						Vec2 camera2dPos = new Vec2((float) camera.getPosition().x, (float) camera.getPosition().z);
+						double distance2d = Mth.sqrt(fountain2dPos.distanceToSqr(camera2dPos));
+						double referenceDistance = 128;
+						float distanceScale = (float) (distance2d / referenceDistance);
+						distanceScale = Math.max(distanceScale, 1.0f);
+
+						pose.scale(distanceScale, distanceScale, distanceScale);
+
+						if (renderSkyPass) {
+							double fadeDistance = ClientConfig.fountainLodDistance;
+							float fade = (float) ((distance2d - fadeDistance) / fadeDistance);
+							fade = Math.max(0f, Math.min(1f, fade));
+							FountainRenderUtil.renderDepthsFountain(fountain, pose, buffer, camera, distance2d, partialTick, fade);
+						}
+						if (renderShockwavePass) {
+							FountainRenderUtil.renderDepthsFountainBeam(pose, buffer, camera, distance2d);
 						}
 						pose.popPose();
 					} else if (renderSkyPass) {
@@ -222,22 +282,80 @@ public class ClientEvents {
 	}
 
 	@SubscribeEvent
+	public static void eggRoomChunkLoad(ChunkEvent.Load event) {
+		if (!event.getLevel().isClientSide()) {
+			return;
+		}
+		if (!(event.getLevel() instanceof ClientLevel level) || !EggRoomUtil.isEggRoom(level)) {
+			return;
+		}
+		Minecraft minecraft = Minecraft.getInstance();
+		ChunkPos pos = event.getChunk().getPos();
+		int minY = level.getMinSection();
+		int maxY = level.getMaxSection();
+		for (int y = minY; y < maxY; y++) {
+			minecraft.levelRenderer.setSectionDirty(pos.x, y, pos.z);
+		}
+	}
+
+	@SubscribeEvent
 	public static void clientTick(TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.END) {
 			IntroScreen.tickWorldThumbnail(Minecraft.getInstance());
-			LocalPlayer player = Minecraft.getInstance().player;
-			ClientLevel level = Minecraft.getInstance().level;
-			if (player == null) return;
-			if (level == null) return;
+			MusicManager.getInstance().tick();
+			Minecraft minecraft = Minecraft.getInstance();
+			if (EggRoomCoverScreen.isCovering() && minecraft.screen instanceof ReceivingLevelScreen) {
+				Screen cover = EggRoomCoverScreen.replaceLoadingScreen();
+				if (cover != null) {
+					minecraft.setScreen(cover);
+				}
+			}
+			LocalPlayer player = minecraft.player;
+			ClientLevel level = minecraft.level;
+			if (player == null || level == null) {
+				DarkWorldDialogue.stop();
+				lastClientDim = null;
+				return;
+			}
+			if (lastClientDim == null || !lastClientDim.equals(level.dimension())) {
+				if (lastClientDim != null) {
+					DarkWorldDialogue.stop();
+				}
+				lastClientDim = level.dimension();
+				eggRoomRebuildLeft = EggRoomUtil.isEggRoom(level) ? 20 : 0;
+				if (eggRoomRebuildLeft > 0) {
+					Minecraft.getInstance().levelRenderer.allChanged();
+				}
+			}
+			DarkWorldDialogue.tick();
+			if (EggRoomUtil.isEggRoom(level)) {
+				player.setXRot(0f);
+				player.xRotO = 0f;
+				player.setSprinting(false);
+				player.fallDistance = 0f;
+				if (eggRoomRebuildLeft > 0) {
+					eggRoomRebuildLeft--;
+					if (eggRoomRebuildLeft == 15 || eggRoomRebuildLeft == 10 || eggRoomRebuildLeft == 5 || eggRoomRebuildLeft == 0) {
+						Minecraft.getInstance().levelRenderer.allChanged();
+					}
+				}
+			}
 
-			level.getCapability(CapabilityRegistry.DARK_FOUNTAIN).ifPresent(cap -> {
-				cap.darkFountains.forEach((pos, fountain) -> fountain.clientTickOpening());
-			});
+			if (!Minecraft.getInstance().isPaused()) {
+				level.getCapability(CapabilityRegistry.DARK_FOUNTAIN).ifPresent(cap -> {
+					cap.darkFountains.forEach((pos, fountain) -> fountain.clientTickOpening());
+					if (DarkWorldUtil.isDepths(level)) {
+						DepthsFountainSwirls.tick(level, cap);
+					}
+				});
+			}
 
 			if (DarkWorldUtil.isDarkWorld(level)) {
 				Minecraft.getInstance().getMusicManager().stopPlaying();
 			}
-			MusicManager.getInstance().tick();
+			if (DarkWorldUtil.isDepths(level)) {
+				return;
+			}
 
 			DarkFountainCapability cap;
 			LazyOptional<DarkFountainCapability> lazyCapability = level.getCapability(CapabilityRegistry.DARK_FOUNTAIN);
@@ -281,7 +399,23 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public static void pressKey(InputEvent.Key event) {
-		if (Minecraft.getInstance().screen instanceof IntroScreen introScreen) {
+		if (DarkWorldDialogue.isActive()) {
+			if (DarkWorldDialogue.handleKey(event.getKey(), event.getAction()) && event.isCancelable()) {
+				event.setCanceled(true);
+			}
+			return;
+		}
+		Minecraft minecraft = Minecraft.getInstance();
+		if (event.getAction() == InputConstants.PRESS && KeyBindings.isConfirmKey(event.getKey())
+				&& minecraft.screen == null && minecraft.player != null
+				&& EggRoomUtil.isEggRoom(minecraft.player.level())) {
+			PacketHandlerRegistry.INSTANCE.sendToServer(new ServerBoundTextBoxPacket(ServerBoundTextBoxPacket.INTERACT, false));
+			if (event.isCancelable()) {
+				event.setCanceled(true);
+			}
+			return;
+		}
+		if (minecraft.screen instanceof IntroScreen introScreen) {
 			if (event.getAction() != 1 || !introScreen.isChoosing)
 				return;
 
@@ -314,8 +448,47 @@ public class ClientEvents {
 	}
 
 	@SubscribeEvent
+	public static void movementInput(MovementInputUpdateEvent event) {
+		DarkWorldDialogue.applyChoiceMovement(event.getInput());
+		if (DarkWorldDialogue.shouldBlockSneak()) {
+			event.getInput().shiftKeyDown = false;
+		}
+		if (!(event.getEntity() instanceof LocalPlayer player) || !EggRoomUtil.isEggRoom(player.level())) {
+			return;
+		}
+		player.setXRot(0f);
+		player.xRotO = 0f;
+		if (DarkWorldDialogue.isChoosing()) {
+			return;
+		}
+		Input input = event.getInput();
+		Vec2 away = EggRoomUtil.cameraAwayFlat(player.getX(), player.getZ());
+		Vec2 wish = EggRoomUtil.worldWish(away, input.forwardImpulse, input.leftImpulse);
+		if (wish.x * wish.x + wish.y * wish.y > 1.0E-6f) {
+			float targetYaw = EggRoomUtil.yawFromWish(wish.x, wish.y);
+			float yaw = Mth.rotLerp(EggRoomUtil.LOOK_SMOOTH, player.getYRot(), targetYaw);
+			player.setYRot(yaw);
+			player.setYHeadRot(yaw);
+			player.yBodyRot = yaw;
+		}
+		Vec2 local = EggRoomUtil.worldToLocal(wish, player.getYRot());
+		input.leftImpulse = local.x;
+		input.forwardImpulse = local.y;
+	}
+
+	@SubscribeEvent
 	public static void onScreenOpen(ScreenEvent.Opening event) {
 		Screen newScreen = event.getNewScreen();
+		if (newScreen != null) {
+			DarkWorldDialogue.stop();
+		}
+		if (newScreen instanceof ReceivingLevelScreen) {
+			Screen cover = EggRoomCoverScreen.replaceLoadingScreen();
+			if (cover != null) {
+				event.setNewScreen(cover);
+				return;
+			}
+		}
 		Minecraft minecraft = Minecraft.getInstance();
 		Player player = minecraft.player;
 		if (player == null)
@@ -365,15 +538,27 @@ public class ClientEvents {
 			event.setCanceled(true);
 			renderDarkWorldCrosshair(gui, window, mc);
 		} else if (overlay == VanillaGuiOverlay.PLAYER_HEALTH.type()) {
+			if (DarkWorldDialogue.shouldHideHud()) {
+				event.setCanceled(true);
+				return;
+			}
 			SoulCapability soulCap = player.getCapability(CapabilityRegistry.SOUL).orElse(null);
 			int soulType = soulCap.soulType;
 
 			event.setCanceled(true);
 			renderDarkWorldHealth(mc, gui, window, mc.player, soulType);
 		} else if (overlay == VanillaGuiOverlay.HOTBAR.type()) {
+			if (DarkWorldDialogue.shouldHideHud()) {
+				event.setCanceled(true);
+				return;
+			}
 			event.setCanceled(true);
 			renderDarkWorldHotbar(mc, gui, window, mc.player);
 		} else if (overlay == VanillaGuiOverlay.EXPERIENCE_BAR.type()) {
+			if (DarkWorldDialogue.shouldHideHud()) {
+				event.setCanceled(true);
+				return;
+			}
 			PlayerRideableJumping playerrideablejumping = mc.player.jumpableVehicle();
 			if (playerrideablejumping == null && mc.gameMode.hasExperience()) {
 				int i = screenWidth / 2 - 91;

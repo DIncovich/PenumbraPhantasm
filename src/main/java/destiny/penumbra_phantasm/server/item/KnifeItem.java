@@ -114,9 +114,23 @@ public class KnifeItem extends SwordItem {
             return InteractionResultHolder.pass(stack);
         }
 
+        //Cancel making a fountain in depths
+        if (DarkWorldUtil.isDepths(level)) {
+            player.displayClientMessage(Component.translatable("message.penumbra_phantasm.making_fountain_inside_depths"), true);
+            return InteractionResultHolder.fail(stack);
+        }
+
         //Cancel making a fountain in dark worlds
         if (DarkWorldUtil.isDarkWorld(level)) {
             player.displayClientMessage(Component.translatable("message.penumbra_phantasm.making_fountain_inside_dark_world"), true);
+            return InteractionResultHolder.fail(stack);
+        }
+
+        BlockPos occupancySeed = player.getOnPos().above();
+        if (DarkFountain.isDepthsXzOccupied(((ServerLevel) level).getServer(),
+                DarkFountain.scaledDepthsX(occupancySeed.getX()),
+                DarkFountain.scaledDepthsZ(occupancySeed.getZ()))) {
+            player.displayClientMessage(Component.translatable("message.penumbra_phantasm.making_fountain_depths_xz_occupied"), true);
             return InteractionResultHolder.fail(stack);
         }
 
@@ -524,6 +538,29 @@ public class KnifeItem extends SwordItem {
         }
 
         darkCap.addDarkFountain(darkFountainPos, targetLevel.dimension(), fountainPos, level.dimension(), 0, 0, 0, 0, new HashSet<>(), new ArrayList<>(), -1, -1, 0);
+
+        ServerLevel depths = DarkWorldUtil.getDepths(level.getServer());
+        if (depths != null) {
+            int depthsX = DarkFountain.scaledDepthsX(fountainPos.getX());
+            int depthsZ = DarkFountain.scaledDepthsZ(fountainPos.getZ());
+            if (DarkFountain.isDepthsXzOccupied(depths, depthsX, depthsZ)) {
+                lightCap.removeDarkFountain(level, fountainPos);
+                darkCap.removeDarkFountain(targetLevel, darkFountainPos);
+                player.displayClientMessage(Component.translatable("message.penumbra_phantasm.making_fountain_depths_conflict"), true);
+                resetMakingState(tag);
+                return;
+            }
+            BlockPos depthsFountainPos = DarkFountain.resolveDepthsFountainPos(depths, fountainPos);
+            ResourceKey<Level> darkDimension = targetLevel.dimension();
+            depths.getCapability(CapabilityRegistry.DARK_FOUNTAIN).ifPresent(depthsCap -> {
+                depthsCap.addDarkFountain(depthsFountainPos, depths.dimension(), darkFountainPos, darkDimension,
+                        -1, 0, 0, 0, new HashSet<>(), new ArrayList<>(), -1, -1, 0);
+            });
+            DarkFountain darkFountain = darkCap.darkFountains.get(darkFountainPos);
+            if (darkFountain != null) {
+                darkFountain.depthsPos = depthsFountainPos;
+            }
+        }
 
         //If player is not creative, put cooldown on knife and drain determination
         if (!player.isCreative()) {

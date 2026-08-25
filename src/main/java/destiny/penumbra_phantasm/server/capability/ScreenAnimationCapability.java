@@ -6,6 +6,7 @@ import destiny.penumbra_phantasm.server.fountain.DarkFountain;
 import destiny.penumbra_phantasm.client.network.ClientBoundAnimationPacket;
 import destiny.penumbra_phantasm.server.registry.CapabilityRegistry;
 import destiny.penumbra_phantasm.server.registry.PacketHandlerRegistry;
+import destiny.penumbra_phantasm.server.egg.EggRoomUtil;
 import destiny.penumbra_phantasm.server.util.DarkWorldUtil;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -51,12 +52,14 @@ public class ScreenAnimationCapability implements INBTSerializable<CompoundTag> 
 
     public int sealShineTicker = -1;
 
+    public int depthsEntryTicker = -1;
+
     public void tick(Level level, Player player) {
         if(player instanceof ServerPlayer serverPlayer)
         {
             AtomicBoolean hasFountain = new AtomicBoolean(false);
             serverPlayer.level().getCapability(CapabilityRegistry.DARK_FOUNTAIN).ifPresent(cap -> hasFountain.set(!cap.darkFountains.isEmpty()));
-            if(DarkWorldUtil.isDarkWorldKey(serverPlayer.level().dimension()) && !hasFountain.get())
+            if(DarkWorldUtil.isDarkWorldKey(serverPlayer.level().dimension()) && !EggRoomUtil.isEggRoomKey(serverPlayer.level().dimension()) && !DarkWorldUtil.isDepthsKey(serverPlayer.level().dimension()) && !hasFountain.get())
             {
                 ServerLevel targetLevel = serverPlayer.getServer().getLevel(serverPlayer.getRespawnDimension());
                 BlockPos pos = serverPlayer.getRespawnPosition();
@@ -89,25 +92,39 @@ public class ScreenAnimationCapability implements INBTSerializable<CompoundTag> 
             sealShineTicker++;
         }
 
+        if (depthsEntryTicker >= 5) {
+            depthsEntryTicker = -1;
+        }
+        if (depthsEntryTicker >= 0) {
+            depthsEntryTicker++;
+        }
+
         //Location title stuff below this point
         currentLocation = Util.makeDescriptionId("biome", level.getBiome(player.getOnPos()).unwrapKey().get().location());
 
-        LazyOptional<DarkFountainCapability> lazyCap = level.getCapability(CapabilityRegistry.DARK_FOUNTAIN);
-        if (lazyCap.isPresent()) {
-            DarkFountainCapability cap = lazyCap.resolve().orElse(null);
 
-            for (Map.Entry<BlockPos, DarkFountain> entry : cap.darkFountains.entrySet()) {
-                DarkFountain fountain = entry.getValue();
-                if (fountain.openingTick != -1) continue;
+        if (!DarkWorldUtil.isDepths(level)) {
+            LazyOptional<DarkFountainCapability> lazyCap = level.getCapability(CapabilityRegistry.DARK_FOUNTAIN);
 
-                double distance = fountain.getFountainPos().getCenter().subtract(player.position()).horizontalDistance();
-                if (distance <= FOUNTAIN_MUSIC_RANGE) {
-                    currentLocation = Util.makeDescriptionId("location", new ResourceLocation(PenumbraPhantasm.MODID, "dark_fountain"));
+            if (lazyCap.isPresent()) {
+                DarkFountainCapability cap = lazyCap.resolve().orElse(null);
+
+                for (Map.Entry<BlockPos, DarkFountain> entry : cap.darkFountains.entrySet()) {
+                    DarkFountain fountain = entry.getValue();
+                    if (fountain.openingTick != -1) continue;
+
+                    double distance = fountain.getFountainPos().getCenter().subtract(player.position()).horizontalDistance();
+                    if (distance <= FOUNTAIN_MUSIC_RANGE) {
+                        currentLocation = Util.makeDescriptionId("location", new ResourceLocation(PenumbraPhantasm.MODID, "dark_fountain"));
+                    }
                 }
             }
         }
 
-        if (!previousLocation.equals(currentLocation)) {
+        if (EggRoomUtil.isEggRoom(level)) {
+            previousLocation = currentLocation;
+            titleAlphaTicker = -1;
+        } else if (!previousLocation.equals(currentLocation)) {
             boolean darkWorldLandFinished = darknessLandTicker < 0 || darknessLandTicker >= 20;
             boolean fountainTransitionFinished = darknessOverlayTicker <= 0;
             boolean notVisited = true;
@@ -142,7 +159,7 @@ public class ScreenAnimationCapability implements INBTSerializable<CompoundTag> 
     }
 
     public void syncToClient(ServerPlayer serverPlayer) {
-        PacketHandlerRegistry.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new ClientBoundAnimationPacket(darknessLandTicker, darknessOverlayTicker, previousLocation, currentLocation, titleAlphaTicker, sealShineTicker));
+        PacketHandlerRegistry.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new ClientBoundAnimationPacket(darknessLandTicker, darknessOverlayTicker, previousLocation, currentLocation, titleAlphaTicker, sealShineTicker, depthsEntryTicker));
     }
 
     @Override
@@ -162,5 +179,6 @@ public class ScreenAnimationCapability implements INBTSerializable<CompoundTag> 
         this.currentLocation = cap.currentLocation;
         this.titleAlphaTicker = cap.titleAlphaTicker;
         this.sealShineTicker = cap.sealShineTicker;
+        this.depthsEntryTicker = cap.depthsEntryTicker;
     }
 }

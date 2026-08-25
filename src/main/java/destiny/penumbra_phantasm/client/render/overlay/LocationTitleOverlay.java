@@ -4,16 +4,21 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import destiny.penumbra_phantasm.PenumbraPhantasm;
 import destiny.penumbra_phantasm.server.capability.ScreenAnimationCapability;
+import destiny.penumbra_phantasm.server.egg.EggRoomUtil;
 import destiny.penumbra_phantasm.server.registry.CapabilityRegistry;
 import destiny.penumbra_phantasm.server.registry.SoundRegistry;
 import destiny.penumbra_phantasm.server.util.DarkWorldUtil;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -26,7 +31,9 @@ public class LocationTitleOverlay {
 
         if (player == null) return;
 
-        if (!DarkWorldUtil.isDarkWorld(player.level()))
+        Level level = player.level();
+
+        if (!DarkWorldUtil.isDarkWorld(level) || EggRoomUtil.isEggRoom(level))
             return;
 
         //Getting capability
@@ -95,14 +102,22 @@ public class LocationTitleOverlay {
         pose.translate(width / 2f, height / 2f, 0f);
         pose.scale(3f, 3f, 1f);
         pose.translate(-width / 2f, -height / 2f, 0f);
-        drawCenteredString(guiGraphics, Component.translatable(currentLocation), width / 2, (int) (height / 2.65f), color, titleAlpha);
+        if (!DarkWorldUtil.isDepths(level)) {
+            drawCenteredString(guiGraphics, Component.translatable(currentLocation), width / 2, (int) (height / 2.65f), color, titleAlpha);
+        } else {
+            drawCenteredStringOutlined(guiGraphics, Component.translatable(currentLocation), width / 2, (int) (height / 2.65f), 0x000000, 0xFFFFFF, titleAlpha);
+        }
         pose.popPose();
 
         pose.pushPose();
         pose.translate(width / 2f, height / 2f, 0f);
         pose.scale(2f, 2f, 1f);
         pose.translate(-width / 2f, -height / 2f, 0f);
-        drawCenteredString(guiGraphics, Component.translatable(currentLocation + ".description"), width / 2, (int) (height / 2.8f), color, subtitleAlpha);
+        if (!DarkWorldUtil.isDepths(level)) {
+            drawCenteredString(guiGraphics, Component.translatable(currentLocation + ".description"), width / 2, (int) (height / 2.8f), color, subtitleAlpha);
+        } else {
+            drawCenteredStringOutlined(guiGraphics, Component.translatable(currentLocation + ".description"), width / 2, (int) (height / 2.8f), 0x000000, 0xFFFFFF, subtitleAlpha);
+        }
         pose.popPose();
 
         lastTick = ticker;
@@ -112,6 +127,19 @@ public class LocationTitleOverlay {
         RenderSystem.setShaderColor(1f ,1f, 1f, alpha);
         graphics.drawCenteredString(Minecraft.getInstance().font, lineString.getString(), x, y, color);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+    }
+
+    public static void drawCenteredStringOutlined(GuiGraphics graphics, Component text, int x, int y, int fillRgb, int outlineRgb, float alpha) {
+        Font font = Minecraft.getInstance().font;
+        FormattedCharSequence seq = text.getVisualOrderText();
+
+        float drawX = x - font.width(seq) / 2f;
+        int a = Mth.clamp((int) (alpha * 255f), 0, 255);
+        int fill = (a << 24) | (fillRgb & 0xFFFFFF);
+        int outline = (a << 24) | (outlineRgb & 0xFFFFFF);
+
+        font.drawInBatch8xOutline(seq, drawX, y, fill, outline, graphics.pose().last().pose(), graphics.bufferSource(), 0xF000F0);
+        graphics.flush();
     }
 
     public static int getColor() {

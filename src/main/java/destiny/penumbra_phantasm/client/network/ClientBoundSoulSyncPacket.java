@@ -11,13 +11,17 @@ public class ClientBoundSoulSyncPacket {
 	public int soulType;
 	public int determination;
 	public int connectionLevel;
+	public int eggRoomManGone;
+	public int eggObtained;
 
-	public ClientBoundSoulSyncPacket(boolean seenIntro, boolean diedWithSoulHearth, int soulType, int determination, int connectionLevel) {
+	public ClientBoundSoulSyncPacket(boolean seenIntro, boolean diedWithSoulHearth, int soulType, int determination, int connectionLevel, int eggRoomManGone, int eggObtained) {
 		this.seenIntro = seenIntro;
 		this.diedWithSoulHearth = diedWithSoulHearth;
 		this.soulType = soulType;
 		this.determination = determination;
 		this.connectionLevel = connectionLevel;
+		this.eggRoomManGone = eggRoomManGone;
+		this.eggObtained = eggObtained;
 	}
 
 	public void encode(FriendlyByteBuf buffer) {
@@ -26,20 +30,16 @@ public class ClientBoundSoulSyncPacket {
 		buffer.writeInt(this.soulType);
 		buffer.writeInt(this.determination);
 		buffer.writeInt(this.connectionLevel);
+		buffer.writeInt(this.eggRoomManGone);
+		buffer.writeInt(this.eggObtained);
 	}
 
 	public static ClientBoundSoulSyncPacket decode(FriendlyByteBuf buffer) {
-		boolean seenIntro = buffer.readBoolean();
-		boolean diedWithSoulHearth = buffer.readBoolean();
-		int soulType = buffer.readInt();
-		int determination = buffer.readInt();
-		int connectionLevel = buffer.readInt();
-
-		return new ClientBoundSoulSyncPacket(seenIntro, diedWithSoulHearth, soulType, determination, connectionLevel);
+		return new ClientBoundSoulSyncPacket(buffer.readBoolean(), buffer.readBoolean(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt());
 	}
 
 	public boolean handle(Supplier<NetworkEvent.Context> ctx) {
-		ctx.get().enqueueWork(() -> ClientBoundPacketHandler.syncSoulStuff(seenIntro, diedWithSoulHearth, soulType, determination, connectionLevel));
+		ctx.get().enqueueWork(() -> ClientBoundPacketHandler.syncSoulStuff(seenIntro, diedWithSoulHearth, soulType, determination, connectionLevel, eggRoomManGone, eggObtained));
 		return true;
 	}
 }

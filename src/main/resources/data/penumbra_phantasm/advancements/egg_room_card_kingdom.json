@@ -1,0 +1,35 @@
+{
+  "parent": "penumbra_phantasm:card_kingdom_visit",
+  "display": {
+    "icon": {
+      "item": "penumbra_phantasm:scarlet_leaves"
+    },
+    "title": {
+      "translate": "advancement.penumbra_phantasm.egg_room_card_kingdom.title"
+    },
+    "description": {
+      "translate": "advancement.penumbra_phantasm.egg_room_card_kingdom.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": {
+    "egg_room_card_kingdom": {
+      "trigger": "penumbra_phantasm:changed_dimension_contains",
+      "conditions": {
+        "to_dimension_contains": "egg_room_card_kingdom"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "egg_room_card_kingdom"
+    ]
+  ],
+  "rewards": {
+    "experience": 0
+  },
+  "sends_telemetry_event": false
+}

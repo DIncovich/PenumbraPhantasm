@@ -5,6 +5,7 @@ import destiny.penumbra_phantasm.client.ClientConfig;
 import destiny.penumbra_phantasm.server.capability.DarkFountainCapability;
 import destiny.penumbra_phantasm.server.datapack.BiomeMusicType;
 import destiny.penumbra_phantasm.server.fountain.DarkFountain;
+import destiny.penumbra_phantasm.server.egg.EggRoomUtil;
 import destiny.penumbra_phantasm.server.registry.CapabilityRegistry;
 import destiny.penumbra_phantasm.server.registry.SoundRegistry;
 import destiny.penumbra_phantasm.server.util.DarkWorldUtil;
@@ -23,6 +24,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -60,25 +62,32 @@ public class MusicManager {
     public boolean pendingLooping = true;
 
     private float lastMusicSlider = Float.NaN;
+    @Nullable
+    private ResourceKey<Level> lastDimension;
 
     public static MusicManager getInstance() {
         return INSTANCE;
     }
 
     private void ensureInitialized() {
+        if (initialized && biomeMusicMap.isEmpty() && minecraft.level != null) {
+            initialized = false;
+        }
         if (!initialized)
         {
             if(minecraft.level != null)
             {
+                biomeMusicMap.clear();
                 RegistryAccess access = minecraft.level.registryAccess();
                 Registry<BiomeMusicType> registry = access.registryOrThrow(BiomeMusicType.REGISTRY_KEY);
                 for(Map.Entry<ResourceKey<BiomeMusicType>, BiomeMusicType> entry : registry.entrySet())
                 {
                     BiomeMusicType type = entry.getValue();
-                    SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(type.sound());
+                    SoundEvent event = SoundEvent.createVariableRangeEvent(type.sound());
                     BiomeMusic music = new BiomeMusic(() -> event, type.looping(), type.minDelay(), type.maxDelay());
                     biomeMusicMap.put(type.biome(), music);
                 }
+                initialized = true;
             }
         }
     }
@@ -88,9 +97,18 @@ public class MusicManager {
 
         LocalPlayer player = minecraft.player;
         ClientLevel level = minecraft.level;
-        if (player == null || level == null) {
+        if (level == null) {
+            lastDimension = null;
             stopImmediately();
             return;
+        }
+        if (player == null) {
+            return;
+        }
+
+        if (lastDimension == null || !lastDimension.equals(level.dimension())) {
+            lastDimension = level.dimension();
+            stopImmediately();
         }
 
         if (!DarkWorldUtil.isDarkWorld(level)) {
@@ -122,8 +140,9 @@ public class MusicManager {
             fadeInTicks = 0;
         }
 
-        if (currentSound != null && (state == State.PLAYING || state == State.FADING_IN)
-                && !minecraft.getSoundManager().isActive(currentSound)) {
+        if (currentSound != null && state != State.SILENT && state != State.WAITING
+                && !minecraft.getSoundManager().isActive(currentSound)
+                && !(state == State.FADING_IN && fadeInTicks <= 10)) {
             if (!currentSound.isStopped()) {
                 currentSound.stopSound();
                 minecraft.getSoundManager().stop(currentSound);
@@ -134,6 +153,7 @@ public class MusicManager {
             } else {
                 currentSound = null;
                 currentSoundEvent = null;
+                pendingSoundEvent = null;
                 state = State.SILENT;
                 fadeInTicks = 0;
             }
@@ -159,6 +179,10 @@ public class MusicManager {
         }
 
         if (desiredSound == null) {
+            if (EggRoomUtil.isEggRoom(level) && (state == State.PLAYING || state == State.FADING_IN)) {
+                tickFade();
+                return;
+            }
             if (state != State.SILENT && state != State.FADING_OUT) {
                 beginFadeOut();
             }
@@ -327,7 +351,8 @@ public class MusicManager {
         ResourceLocation biomeId = biomeHolder.unwrapKey()
                 .map(ResourceKey::location)
                 .orElse(null);
-        if (biomeId == null) return null;
+        if (biomeId == null)
+            return null;
         return biomeMusicMap.get(biomeId);
     }
 
@@ -338,6 +363,10 @@ public class MusicManager {
 
         DarkFountainCapability cap = lazyCap.resolve().orElse(null);
         if (cap == null) return null;
+
+        if (DarkWorldUtil.isDepths(level)) {
+            return null;
+        }
 
         for (Map.Entry<BlockPos, DarkFountain> entry : cap.darkFountains.entrySet()) {
             DarkFountain fountain = entry.getValue();

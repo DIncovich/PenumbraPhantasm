@@ -12,6 +12,7 @@ import destiny.penumbra_phantasm.server.util.DarkWorldUtil;
 import destiny.penumbra_phantasm.server.util.ModUtil;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -54,6 +55,19 @@ public class SoulHearthItem extends Item {
         super(pProperties);
     }
 
+    public static boolean isOwnedBy(ItemStack stack, UUID playerUUID) {
+        if (stack.isEmpty() || !(stack.getItem() instanceof SoulHearthItem)) {
+            return false;
+        }
+        CompoundTag tag = stack.getTag();
+        return tag != null && tag.hasUUID(OWNER_UUID) && playerUUID.equals(tag.getUUID(OWNER_UUID));
+    }
+
+    public static boolean isHoldingOwn(Player player) {
+        UUID playerUUID = player.getUUID();
+        return isOwnedBy(player.getMainHandItem(), playerUUID) || isOwnedBy(player.getOffhandItem(), playerUUID);
+    }
+
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
@@ -92,6 +106,11 @@ public class SoulHearthItem extends Item {
         }
 
         if (!DarkWorldUtil.isDarkWorld(level)) return InteractionResultHolder.pass(stack);
+
+        if (DarkWorldUtil.isDepths(level)) {
+            player.displayClientMessage(Component.translatable("message.penumbra_phantasm.sealing_fountain_depths"), true);
+            return InteractionResultHolder.pass(stack);
+        }
 
         if (stack.getTag() == null) return InteractionResultHolder.pass(stack);
 

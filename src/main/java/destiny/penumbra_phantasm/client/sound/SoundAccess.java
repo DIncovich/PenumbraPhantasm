@@ -45,6 +45,28 @@ public class SoundAccess {
         return SoundRegistry.FOUNTAIN_WIND.get();
     }
 
+    public static void playFountainWindDepths(BlockPos fountainPos, boolean stop)
+    {
+        DarkFountain fountain = getFountain(fountainPos);
+
+        if(fountain != null)
+        {
+            if(fountain.windSound == null)
+            {
+                fountain.windSound = new DarkFountainSoundWrapper.DarkFountainWindDepths(fountain);
+            }
+
+            if(stop)
+                fountain.stopWind();
+            else
+                fountain.playWind();
+        }
+    }
+
+    public static SoundEvent getFountainWindDepths() {
+        return SoundRegistry.FOUNTAIN_WIND_DEPTHS.get();
+    }
+
     public static void playFountainDarkness(BlockPos fountainPos, boolean stop)
     {
         DarkFountain fountain = getFountain(fountainPos);

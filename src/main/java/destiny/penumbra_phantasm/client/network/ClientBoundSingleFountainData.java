@@ -43,6 +43,10 @@ public class ClientBoundSingleFountainData
 		buffer.writeInt(fountain.sealingTick);
 		buffer.writeInt(fountain.sealingFrameTick);
 		buffer.writeFloat(fountain.sealingFrameTickProgress);
+		buffer.writeBoolean(fountain.depthsPos != null);
+		if (fountain.depthsPos != null) {
+			buffer.writeBlockPos(fountain.depthsPos);
+		}
 	}
 
 	public static ClientBoundSingleFountainData decode(FriendlyByteBuf buffer)
@@ -65,9 +69,11 @@ public class ClientBoundSingleFountainData
 		int sealingTick = buffer.readInt();
 		int sealingFrameTick = buffer.readInt();
 		float sealingFrameTickProgress = buffer.readFloat();
+		BlockPos depthsPos = buffer.readBoolean() ? buffer.readBlockPos() : null;
 
 		DarkFountain fountain = new DarkFountain(fountainPos, fountainDim, targetPos, targetDim, openingTick,
 				frameTick, frame, frameOptimized, teleportedEntities, shockwaveTickers, sealingTick, sealingFrameTick, sealingFrameTickProgress);
+		fountain.depthsPos = depthsPos;
 
 		return new ClientBoundSingleFountainData(fountain);
 	}

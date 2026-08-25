@@ -32,6 +32,12 @@ public class PacketHandlerRegistry {
                 .consumerMainThread(ClientBoundSoundPackets.FountainWind::handle)
                 .add();
 
+        INSTANCE.messageBuilder(ClientBoundSoundPackets.FountainWindDepths.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(ClientBoundSoundPackets.FountainWindDepths::encode)
+                .decoder(ClientBoundSoundPackets.FountainWindDepths::new)
+                .consumerMainThread(ClientBoundSoundPackets.FountainWindDepths::handle)
+                .add();
+
         INSTANCE.messageBuilder(ClientBoundSoundPackets.FountainDarkness.class, index++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(ClientBoundSoundPackets.FountainDarkness::encode)
                 .decoder(ClientBoundSoundPackets.FountainDarkness::new)
@@ -144,6 +150,36 @@ public class PacketHandlerRegistry {
                 .encoder(ClientBoundSoulSyncPacket::encode)
                 .decoder(ClientBoundSoulSyncPacket::decode)
                 .consumerMainThread(ClientBoundSoulSyncPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(ClientBoundTextBoxPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(ClientBoundTextBoxPacket::encode)
+                .decoder(ClientBoundTextBoxPacket::new)
+                .consumerMainThread(ClientBoundTextBoxPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(ServerBoundTextBoxPacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(ServerBoundTextBoxPacket::encode)
+                .decoder(ServerBoundTextBoxPacket::new)
+                .consumerMainThread(ServerBoundTextBoxPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(ClientBoundRemoveFountainPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(ClientBoundRemoveFountainPacket::encode)
+                .decoder(ClientBoundRemoveFountainPacket::decode)
+                .consumerMainThread(ClientBoundRemoveFountainPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(ClientBoundEggRoomCoverPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(ClientBoundEggRoomCoverPacket::encode)
+                .decoder(ClientBoundEggRoomCoverPacket::decode)
+                .consumerMainThread(ClientBoundEggRoomCoverPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(ServerBoundEggRoomReadyPacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(ServerBoundEggRoomReadyPacket::encode)
+                .decoder(ServerBoundEggRoomReadyPacket::decode)
+                .consumerMainThread(ServerBoundEggRoomReadyPacket::handle)
                 .add();
     }
 }

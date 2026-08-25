@@ -1,8 +1,10 @@
 package destiny.penumbra_phantasm.server.capability;
 
+import destiny.penumbra_phantasm.client.network.ClientBoundRemoveFountainPacket;
 import destiny.penumbra_phantasm.server.fountain.DarkFountain;
 import destiny.penumbra_phantasm.server.util.DarkWorldUtil;
 import destiny.penumbra_phantasm.server.registry.CapabilityRegistry;
+import destiny.penumbra_phantasm.server.registry.PacketHandlerRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -14,6 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.*;
 
@@ -125,6 +128,10 @@ public class DarkFountainCapability implements INBTSerializable<CompoundTag> {
         if (level instanceof ServerLevel serverLevel) {
             serverLevel.getCapability(CapabilityRegistry.DARK_FOUNTAIN).ifPresent(cap ->
                     cap.darkFountains.remove(fountainPos));
+            PacketHandlerRegistry.INSTANCE.send(
+                    PacketDistributor.DIMENSION.with(serverLevel::dimension),
+                    new ClientBoundRemoveFountainPacket(fountainPos)
+            );
         }
     }
 

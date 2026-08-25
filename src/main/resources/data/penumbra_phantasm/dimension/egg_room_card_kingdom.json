@@ -1,0 +1,18 @@
+{
+  "type": "penumbra_phantasm:egg_room_dimension_type",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "penumbra_phantasm:egg_room_card_kingdom",
+      "lakes": false,
+      "features": false,
+      "layers": [
+        {
+          "height": 1,
+          "block": "minecraft:air"
+        }
+      ],
+      "structure_overrides": []
+    }
+  }
+}

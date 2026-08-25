@@ -281,5 +281,49 @@
     [
       "penumbra_phantasm:an_outstanding_move"
     ]
+  },
+  "egg_room_card_kingdom": {
+    "sounds":
+    [
+      "penumbra_phantasm:egg_room_card_kingdom"
+    ]
+  },
+  "egg_acquire": {
+    "sounds":
+    [
+      "penumbra_phantasm:egg_acquire"
+    ]
+  },
+  "textbox_generic": {
+    "sounds":
+    [
+      "penumbra_phantasm:textbox_generic"
+    ]
+  },
+  "depths_ambience": {
+    "sounds":
+    [
+      "penumbra_phantasm:depths_ambience"
+    ]
+  },
+  "depths_enter": {
+    "sounds":
+    [
+      "penumbra_phantasm:depths_enter"
+    ]
+  },
+  "fountain_wind_depths": {
+    "sounds":
+    [
+      "penumbra_phantasm:fountain_wind_depths"
+    ]
+  },
+  "depths_thunder": {
+    "sounds":
+    [
+      "penumbra_phantasm:depths_thunder_1",
+      "penumbra_phantasm:depths_thunder_2",
+      "penumbra_phantasm:depths_thunder_3"
+    ]
   }
 }

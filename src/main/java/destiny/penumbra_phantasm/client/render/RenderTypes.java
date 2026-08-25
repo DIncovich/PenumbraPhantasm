@@ -35,6 +35,19 @@ public class RenderTypes extends RenderType {
                         .createCompositeState(true));
     }
 
+    public static RenderType fountainBeam()
+    {
+        return create("fountain_beam", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256,
+                false, false,
+                RenderType.CompositeState.builder()
+                        .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
+                        .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                        .setDepthTestState(NO_DEPTH_TEST)
+                        .setWriteMaskState(COLOR_WRITE)
+                        .setCullState(NO_CULL)
+                        .createCompositeState(true));
+    }
+
     public static RenderType fountainShockwave(ResourceLocation rl)
     {
         return create("fountain_shockwave", DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS, 256,

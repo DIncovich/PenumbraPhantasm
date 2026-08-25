@@ -9,7 +9,7 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record ClientBoundAnimationPacket(int darknessLandTicker, int darknessOverlayTicker, String previousLocation,
-                                         String currentLocation, int titleAlphaTicker, int sealShineTicker) {
+                                         String currentLocation, int titleAlphaTicker, int sealShineTicker, int depthsEntryTicker) {
 
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeInt(darknessLandTicker);
@@ -18,6 +18,7 @@ public record ClientBoundAnimationPacket(int darknessLandTicker, int darknessOve
         buffer.writeUtf(currentLocation);
         buffer.writeInt(titleAlphaTicker);
         buffer.writeInt(sealShineTicker);
+        buffer.writeInt(depthsEntryTicker);
     }
 
     public static ClientBoundAnimationPacket decode(FriendlyByteBuf buffer) {
@@ -27,8 +28,9 @@ public record ClientBoundAnimationPacket(int darknessLandTicker, int darknessOve
         String currentLocation = buffer.readUtf();
         int titleAlphaTicker = buffer.readInt();
         int sealShineTicker = buffer.readInt();
+        int depthsEntryTicker = buffer.readInt();
 
-        return new ClientBoundAnimationPacket(darknessLandTicker, darknessOverlayTicker, previousLocation, currentLocation, titleAlphaTicker, sealShineTicker);
+        return new ClientBoundAnimationPacket(darknessLandTicker, darknessOverlayTicker, previousLocation, currentLocation, titleAlphaTicker, sealShineTicker, depthsEntryTicker);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
@@ -42,6 +44,7 @@ public record ClientBoundAnimationPacket(int darknessLandTicker, int darknessOve
                     cap.currentLocation = currentLocation;
                     cap.titleAlphaTicker = titleAlphaTicker;
                     cap.sealShineTicker = sealShineTicker;
+                    cap.depthsEntryTicker = depthsEntryTicker;
                 });
             }
         });
