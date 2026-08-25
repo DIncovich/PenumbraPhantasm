@@ -287,7 +287,12 @@ public class DarkFountain {
             }
         }
 
-        PacketHandlerRegistry.INSTANCE.send(PacketDistributor.DIMENSION.with(level::dimension), new ClientBoundSingleFountainData(this));
+        boolean stillPresent = level.getCapability(CapabilityRegistry.DARK_FOUNTAIN)
+                .map(cap -> cap.darkFountains.get(this.fountainPos) == this)
+                .orElse(false);
+        if (stillPresent) {
+            PacketHandlerRegistry.INSTANCE.send(PacketDistributor.DIMENSION.with(level::dimension), new ClientBoundSingleFountainData(this));
+        }
     }
 
     public void clientTickOpening() {

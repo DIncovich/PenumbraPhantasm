@@ -163,5 +163,11 @@ public class PacketHandlerRegistry {
                 .decoder(ServerBoundTextBoxPacket::new)
                 .consumerMainThread(ServerBoundTextBoxPacket::handle)
                 .add();
+
+        INSTANCE.messageBuilder(ClientBoundRemoveFountainPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(ClientBoundRemoveFountainPacket::encode)
+                .decoder(ClientBoundRemoveFountainPacket::decode)
+                .consumerMainThread(ClientBoundRemoveFountainPacket::handle)
+                .add();
     }
 }
