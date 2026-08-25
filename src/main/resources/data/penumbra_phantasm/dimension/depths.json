@@ -9,6 +9,10 @@
       "layers": [
         {
           "height": 1,
+          "block": "minecraft:bedrock"
+        },
+        {
+          "height": 1,
           "block": "penumbra_phantasm:tenebralith"
         }
       ],

@@ -9,8 +9,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 
 public class DepthsSkyLightning {
-    public static final int MIN_SILHOUETTE_COUNT = 5;
-    public static final int MAX_SILHOUETTE_COUNT = 10;
+    public static final int MIN_SILHOUETTE_COUNT = 10;
+    public static final int MAX_SILHOUETTE_COUNT = 15;
+
     public static final int FLASH_PERIOD = 300;
     public static final float FLASH_CHANCE = 0.35F;
     public static final int FLASH_DURATION_TICKS = 100;
