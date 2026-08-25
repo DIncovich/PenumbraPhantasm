@@ -1,6 +1,7 @@
 package destiny.penumbra_phantasm.server.egg;
 
 import destiny.penumbra_phantasm.PenumbraPhantasm;
+import destiny.penumbra_phantasm.client.network.ClientBoundEggRoomCoverPacket;
 import destiny.penumbra_phantasm.client.network.ClientBoundTextBoxPacket;
 import destiny.penumbra_phantasm.server.block.ScarletLogMysteriousDoorBlock;
 import destiny.penumbra_phantasm.server.capability.SoulCapability;
@@ -53,7 +54,10 @@ public class EggRoomManager {
 	private static final List<PendingDoor> PENDING_DOORS = new ArrayList<>();
 	private static final Map<UUID, Long> DOOR_LOCK_UNTIL = new HashMap<>();
 	private static final Map<UUID, Long> INTERACT_TICK = new HashMap<>();
-	private static final Map<UUID, Long> ARRIVAL_GRACE_UNTIL = new HashMap<>();
+	private static final Map<UUID, Long> TRANSIT_UNTIL = new HashMap<>();
+	private static final Map<UUID, TransitDest> TRANSIT_DEST = new HashMap<>();
+	private static final Set<UUID> TRANSIT = new HashSet<>();
+	private static final Set<UUID> RESYNC_SCHEDULED = new HashSet<>();
 	private static final Set<UUID> LEFT_ENTRANCE = new HashSet<>();
 	private static final Set<UUID> LEAVING = new HashSet<>();
 	private static final long ARRIVAL_GRACE_MS = 8000;
@@ -148,6 +152,7 @@ public class EggRoomManager {
 
 		Vec3 spawn = EggRoomUtil.spawnPos();
 		eggLevel.getChunk(BlockPos.containing(spawn.x, spawn.y, spawn.z));
+		beginTransit(serverPlayer, eggLevel.dimension(), true, spawn.x, spawn.y, spawn.z, EggRoomUtil.SPAWN_YAW);
 		serverPlayer.teleportTo(eggLevel, spawn.x, spawn.y, spawn.z, EggRoomUtil.SPAWN_YAW, 0f);
 		onChangedToEggRoom(serverPlayer);
 	}
@@ -157,15 +162,24 @@ public class EggRoomManager {
 			return;
 		}
 		prepareArrival(player);
-		MinecraftServer server = player.getServer();
-		if (server == null) {
+	}
+
+	public static void onClientReady(ServerPlayer player) {
+		if (!TRANSIT.contains(player.getUUID())) {
 			return;
 		}
-		server.execute(() -> {
-			if (EggRoomUtil.isEggRoom(player.level()) && player.level() instanceof ServerLevel level) {
-				sendRoomToPlayer(player, level, Data.get(level));
-			}
-		});
+		endTransit(player);
+	}
+
+	public static void onLoggedOut(UUID id) {
+		DOOR_LOCK_UNTIL.remove(id);
+		INTERACT_TICK.remove(id);
+		TRANSIT_UNTIL.remove(id);
+		TRANSIT_DEST.remove(id);
+		TRANSIT.remove(id);
+		RESYNC_SCHEDULED.remove(id);
+		LEFT_ENTRANCE.remove(id);
+		LEAVING.remove(id);
 	}
 
 	private static void prepareArrival(ServerPlayer player) {
@@ -177,11 +191,9 @@ public class EggRoomManager {
 		forceRoomChunks(eggLevel, data);
 		LEFT_ENTRANCE.remove(player.getUUID());
 		player.getCapability(CapabilityRegistry.SOUL).ifPresent(cap -> cap.eggLeftEntrance = false);
-		ARRIVAL_GRACE_UNTIL.put(player.getUUID(), System.currentTimeMillis() + ARRIVAL_GRACE_MS);
-		player.setNoGravity(false);
-		player.setDeltaMovement(Vec3.ZERO);
-		player.fallDistance = 0f;
-		sendRoomToPlayer(player, eggLevel, data);
+		Vec3 spawn = EggRoomUtil.spawnPos();
+		beginTransit(player, eggLevel.dimension(), true, spawn.x, spawn.y, spawn.z, EggRoomUtil.SPAWN_YAW);
+		scheduleResync(player, true, spawn.x, spawn.y, spawn.z, EggRoomUtil.SPAWN_YAW);
 	}
 
 	public static void leaveToOrigin(ServerPlayer player) {
@@ -254,9 +266,10 @@ public class EggRoomManager {
 			cap.eggLeftEntrance = false;
 			cap.eggReturnDim = "";
 		}
-		ARRIVAL_GRACE_UNTIL.remove(player.getUUID());
-		player.setNoGravity(false);
+		dest.getChunk(BlockPos.containing(x, y, z));
+		beginTransit(player, dest.dimension(), false, x, y, z, yaw);
 		player.teleportTo(dest, x, y, z, yaw, 0f);
+		scheduleResync(player, false, x, y, z, yaw);
 		LEFT_ENTRANCE.remove(player.getUUID());
 	}
 
@@ -284,6 +297,7 @@ public class EggRoomManager {
 	}
 
 	public static void tickPlayer(ServerPlayer player) {
+		tickTransit(player);
 		if (!EggRoomUtil.isEggRoom(player.level())) {
 			return;
 		}
@@ -295,7 +309,7 @@ public class EggRoomManager {
 		if (cap == null) {
 			return;
 		}
-		if (LEAVING.contains(player.getUUID())) {
+		if (LEAVING.contains(player.getUUID()) || isInTransit(player.getUUID())) {
 			return;
 		}
 		player.setNoGravity(false);
@@ -304,20 +318,13 @@ public class EggRoomManager {
 		double x = player.getX();
 		double y = player.getY();
 		double z = player.getZ();
-		boolean arriving = isArriving(player.getUUID());
 		boolean fallen = y < EggRoomUtil.FLOOR_Y;
 		if (fallen) {
 			settleAtSpawn(player);
 			return;
 		}
-		if (EggRoomUtil.northOfRoom(z) && !arriving && LEFT_ENTRANCE.contains(player.getUUID())) {
+		if (EggRoomUtil.northOfRoom(z) && LEFT_ENTRANCE.contains(player.getUUID())) {
 			leaveToOrigin(player);
-			return;
-		}
-		if (arriving) {
-			if (player.onGround()) {
-				ARRIVAL_GRACE_UNTIL.remove(player.getUUID());
-			}
 			return;
 		}
 		boolean inEntrance = EggRoomUtil.inEntranceZone(x, z);
@@ -331,7 +338,7 @@ public class EggRoomManager {
 	}
 
 	public static void tryInteract(ServerPlayer player) {
-		if (!EggRoomUtil.isEggRoom(player.level()) || !(player.level() instanceof ServerLevel eggLevel)) {
+		if (!EggRoomUtil.isEggRoom(player.level()) || !(player.level() instanceof ServerLevel eggLevel) || isInTransit(player.getUUID())) {
 			return;
 		}
 		long tick = eggLevel.getGameTime();
@@ -384,7 +391,7 @@ public class EggRoomManager {
 	}
 
 	private static void settleAtSpawn(ServerPlayer player) {
-		if (!EggRoomUtil.isEggRoom(player.level())) {
+		if (!EggRoomUtil.isEggRoom(player.level()) || isInTransit(player.getUUID())) {
 			return;
 		}
 		Vec3 spawn = EggRoomUtil.spawnPos();
@@ -402,16 +409,82 @@ public class EggRoomManager {
 		player.setYBodyRot(EggRoomUtil.SPAWN_YAW);
 	}
 
-	private static boolean isArriving(UUID id) {
-		Long until = ARRIVAL_GRACE_UNTIL.get(id);
-		if (until == null) {
-			return false;
+	private static boolean isInTransit(UUID id) {
+		return TRANSIT.contains(id);
+	}
+
+	private static void beginTransit(ServerPlayer player, ResourceKey<Level> destDim, boolean eggRoom, double x, double y, double z, float yaw) {
+		UUID id = player.getUUID();
+		boolean first = TRANSIT.add(id);
+		TRANSIT_UNTIL.put(id, System.currentTimeMillis() + ARRIVAL_GRACE_MS);
+		TRANSIT_DEST.put(id, new TransitDest(eggRoom, x, y, z, yaw));
+		player.setNoGravity(true);
+		player.setDeltaMovement(Vec3.ZERO);
+		player.fallDistance = 0f;
+		if (first) {
+			ChunkPos chunk = new ChunkPos(BlockPos.containing(x, y, z));
+			PacketHandlerRegistry.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player),
+					new ClientBoundEggRoomCoverPacket(destDim, chunk.x, chunk.z));
 		}
-		if (System.currentTimeMillis() >= until) {
-			ARRIVAL_GRACE_UNTIL.remove(id);
-			return false;
+	}
+
+	private static void scheduleResync(ServerPlayer player, boolean eggRoom, double x, double y, double z, float yaw) {
+		if (!RESYNC_SCHEDULED.add(player.getUUID())) {
+			return;
 		}
-		return true;
+		MinecraftServer server = player.getServer();
+		if (server == null) {
+			RESYNC_SCHEDULED.remove(player.getUUID());
+			return;
+		}
+		server.execute(() -> {
+			RESYNC_SCHEDULED.remove(player.getUUID());
+			if (player.hasDisconnected()) {
+				return;
+			}
+			resyncNow(player, eggRoom, x, y, z, yaw);
+		});
+	}
+
+	private static void resyncNow(ServerPlayer player, boolean eggRoom, double x, double y, double z, float yaw) {
+		if (!(player.level() instanceof ServerLevel level)) {
+			return;
+		}
+		player.connection.teleport(x, y, z, yaw, 0f);
+		if (eggRoom && EggRoomUtil.isEggRoom(level)) {
+			applySpawnFacing(player);
+			sendRoomToPlayer(player, level, Data.get(level));
+		} else {
+			sendAreaToPlayer(player, level, x, z);
+		}
+	}
+
+	private static void tickTransit(ServerPlayer player) {
+		UUID id = player.getUUID();
+		if (!TRANSIT.contains(id)) {
+			return;
+		}
+		player.setNoGravity(true);
+		player.setDeltaMovement(Vec3.ZERO);
+		player.fallDistance = 0f;
+		player.setSprinting(false);
+		Long until = TRANSIT_UNTIL.get(id);
+		if (until != null && System.currentTimeMillis() >= until) {
+			TransitDest dest = TRANSIT_DEST.get(id);
+			if (dest != null) {
+				resyncNow(player, dest.eggRoom, dest.x, dest.y, dest.z, dest.yaw);
+			}
+			endTransit(player);
+		}
+	}
+
+	private static void endTransit(ServerPlayer player) {
+		UUID id = player.getUUID();
+		TRANSIT.remove(id);
+		TRANSIT_UNTIL.remove(id);
+		TRANSIT_DEST.remove(id);
+		RESYNC_SCHEDULED.remove(id);
+		player.setNoGravity(false);
 	}
 
 	private static void forceRoomChunks(ServerLevel level, Data data) {
@@ -448,6 +521,19 @@ public class EggRoomManager {
 		}
 	}
 
+	private static void sendAreaToPlayer(ServerPlayer player, ServerLevel level, double x, double z) {
+		ChunkPos center = new ChunkPos(BlockPos.containing(x, 0, z));
+		level.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, center, 3, player.getId());
+		player.connection.send(new ClientboundSetChunkCacheCenterPacket(center.x, center.z));
+		int radius = 2;
+		for (int cx = center.x - radius; cx <= center.x + radius; cx++) {
+			for (int cz = center.z - radius; cz <= center.z + radius; cz++) {
+				LevelChunk chunk = level.getChunk(cx, cz);
+				player.connection.send(new ClientboundLevelChunkWithLightPacket(chunk, level.getLightEngine(), null, null));
+			}
+		}
+	}
+
 	private static boolean isPendingDoor(ResourceKey<Level> dimension, BlockPos door) {
 		BlockPos lower = door;
 		for (PendingDoor pending : PENDING_DOORS) {
@@ -468,6 +554,9 @@ public class EggRoomManager {
 	}
 
 	private record PendingDoor(ResourceKey<Level> dimension, BlockPos door, long when) {
+	}
+
+	private record TransitDest(boolean eggRoom, double x, double y, double z, float yaw) {
 	}
 
 	public static class Data extends SavedData {

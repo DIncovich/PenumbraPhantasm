@@ -367,6 +367,13 @@ public class CommonEvents {
     }
 
     @SubscribeEvent
+    public void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            EggRoomManager.onLoggedOut(serverPlayer.getUUID());
+        }
+    }
+
+    @SubscribeEvent
     public void playerRespawn(PlayerEvent.PlayerRespawnEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             rescuePlayerIfStrandedDarkWorldWithoutFountain(serverPlayer);

@@ -13,6 +13,8 @@ import destiny.penumbra_phantasm.client.render.GreatDoorRenderUtil;
 import destiny.penumbra_phantasm.client.render.screen.DarkWorldInventoryScreen;
 import destiny.penumbra_phantasm.client.render.screen.DarkWorldLanScreen;
 import destiny.penumbra_phantasm.client.render.screen.DarkWorldPauseScreen;
+import destiny.penumbra_phantasm.client.render.screen.EggRoomCoverScreen;
+import destiny.penumbra_phantasm.client.render.screen.IntroScreen;
 import destiny.penumbra_phantasm.client.KeyBindings;
 import destiny.penumbra_phantasm.client.render.textbox.DarkWorldDialogue;
 import destiny.penumbra_phantasm.server.capability.SoulCapability;
@@ -25,6 +27,7 @@ import net.minecraft.client.Options;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.PauseScreen;
+import net.minecraft.client.gui.screens.ReceivingLevelScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.ShareToLanScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -54,7 +57,6 @@ import org.lwjgl.opengl.GL11;
 import destiny.penumbra_phantasm.PenumbraPhantasm;
 import destiny.penumbra_phantasm.client.render.FountainRenderUtil;
 import destiny.penumbra_phantasm.client.render.DepthsFountainSwirls;
-import destiny.penumbra_phantasm.client.render.screen.IntroScreen;
 import destiny.penumbra_phantasm.client.sound.MusicManager;
 import destiny.penumbra_phantasm.server.fountain.DarkFountain;
 import destiny.penumbra_phantasm.server.capability.DarkFountainCapability;
@@ -301,8 +303,15 @@ public class ClientEvents {
 		if (event.phase == TickEvent.Phase.END) {
 			IntroScreen.tickWorldThumbnail(Minecraft.getInstance());
 			MusicManager.getInstance().tick();
-			LocalPlayer player = Minecraft.getInstance().player;
-			ClientLevel level = Minecraft.getInstance().level;
+			Minecraft minecraft = Minecraft.getInstance();
+			if (EggRoomCoverScreen.isCovering() && minecraft.screen instanceof ReceivingLevelScreen) {
+				Screen cover = EggRoomCoverScreen.replaceLoadingScreen();
+				if (cover != null) {
+					minecraft.setScreen(cover);
+				}
+			}
+			LocalPlayer player = minecraft.player;
+			ClientLevel level = minecraft.level;
 			if (player == null || level == null) {
 				DarkWorldDialogue.stop();
 				lastClientDim = null;
@@ -472,6 +481,13 @@ public class ClientEvents {
 		Screen newScreen = event.getNewScreen();
 		if (newScreen != null) {
 			DarkWorldDialogue.stop();
+		}
+		if (newScreen instanceof ReceivingLevelScreen) {
+			Screen cover = EggRoomCoverScreen.replaceLoadingScreen();
+			if (cover != null) {
+				event.setNewScreen(cover);
+				return;
+			}
 		}
 		Minecraft minecraft = Minecraft.getInstance();
 		Player player = minecraft.player;

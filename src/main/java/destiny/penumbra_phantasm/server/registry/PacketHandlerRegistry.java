@@ -169,5 +169,17 @@ public class PacketHandlerRegistry {
                 .decoder(ClientBoundRemoveFountainPacket::decode)
                 .consumerMainThread(ClientBoundRemoveFountainPacket::handle)
                 .add();
+
+        INSTANCE.messageBuilder(ClientBoundEggRoomCoverPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(ClientBoundEggRoomCoverPacket::encode)
+                .decoder(ClientBoundEggRoomCoverPacket::decode)
+                .consumerMainThread(ClientBoundEggRoomCoverPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(ServerBoundEggRoomReadyPacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(ServerBoundEggRoomReadyPacket::encode)
+                .decoder(ServerBoundEggRoomReadyPacket::decode)
+                .consumerMainThread(ServerBoundEggRoomReadyPacket::handle)
+                .add();
     }
 }

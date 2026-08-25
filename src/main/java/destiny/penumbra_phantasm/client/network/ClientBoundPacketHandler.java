@@ -4,6 +4,7 @@ import destiny.penumbra_phantasm.client.render.textbox.DarkWorldDialogue;
 import destiny.penumbra_phantasm.client.render.textbox.TextBoxMetrics;
 import destiny.penumbra_phantasm.client.render.textbox.TextBoxScript;
 import destiny.penumbra_phantasm.client.render.screen.DarknessFallScreen;
+import destiny.penumbra_phantasm.client.render.screen.EggRoomCoverScreen;
 import destiny.penumbra_phantasm.client.render.screen.FireDoorScreen;
 import destiny.penumbra_phantasm.client.render.screen.IntroScreen;
 import destiny.penumbra_phantasm.server.fountain.FireDoor;
@@ -61,6 +62,10 @@ public class ClientBoundPacketHandler
 		Minecraft minecraft = Minecraft.getInstance();
 		minecraft.setScreen(new DarknessFallScreen(() -> minecraft.setScreen(null), destinationPos, spawnX, spawnY, spawnZ, spawnYaw, dim,
 				narrowGreatDoorPrepare, arrivalGreatDoorAnchor));
+	}
+
+	public static void openEggRoomCover(ResourceKey<Level> dim, int chunkX, int chunkZ) {
+		EggRoomCoverScreen.open(dim, chunkX, chunkZ);
 	}
 
 	public static void syncSoulBreak(boolean diedWithSoulHearth, int soulType)
