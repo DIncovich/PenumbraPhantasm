@@ -5,7 +5,23 @@
   "item.penumbra_phantasm.netherite_knife": "Незеритовый нож",
   "item.penumbra_phantasm.real_knife": "§4Настоящий нож§r",
   "item.penumbra_phantasm.black_knife": "Чёрный нож",
+
+  "item.penumbra_phantasm.dark_wallet": "Тёмный кошелёк",
+  "item.penumbra_phantasm.dark_dollar": "Тёмный доллар",
+  "item.penumbra_phantasm.dark_dime": "Тёмная десятина",
+  "item.penumbra_phantasm.glowshard": "Светосколок",
+  
   "item.penumbra_phantasm.dark_candy": "Тёмная конфета",
+  "item.penumbra_phantasm.choco_diamond": "Шокобубна",
+  "item.penumbra_phantasm.darkburger": "Тёмбургер",
+  "item.penumbra_phantasm.double_darkburger": "Двойной тёмбургер",
+  "item.penumbra_phantasm.hearts_donut": "Червонный пончик",
+  "item.penumbra_phantasm.lancer_cookie": "Лансерченье",
+
+  "item.penumbra_phantasm.tension_bit": "Бит напряжения",
+
+  "item.penumbra_phantasm.door_key": "Door Key",
+  
   "item.penumbra_phantasm.friend": "§eITEM_F§r§dRIEND§r",
   "item.penumbra_phantasm.soul_hearth": "Горнило ДУШИ",
   "item.penumbra_phantasm.fractal_mirror": "Фрактальное зеркало",
@@ -357,11 +373,16 @@
   "block.penumbra_phantasm.scarlet_log_mysterious_door": "Таинственная дверь",
   "block.penumbra_phantasm.unbreakable_darkness": "Тьма",
 
+  "liquid.penumbra_phantasm.pure_darkness": "Чистая тьма",
+  "liquid.penumbra_phantasm.luminescent_water": "Флуоресцентная вода",
+  
   "itemGroup.penumbra_phantasm.main": "PENUMBRA PHANTASM",
   "itemGroup.penumbra_phantasm.card_kingdom": "КАРТОЧНОЕ КОРОЛЕВСТВО",
   "itemGroup.penumbra_phantasm.the_depths": "ГЛУБИНЫ",
 
-  "advancement.penumbra_phantasm.soul_hearth.title": "ТВОЯ сила",
+  "entity.penumbra_phantasm.sealing_soul": "ДУША",
+  
+  "advancement.penumbra_phantasm.soul_hearth.title": "ВАША сила",
   "advancement.penumbra_phantasm.soul_hearth.description": "Пробудите горнило ДУШИ",
   "advancement.penumbra_phantasm.determination_injection.title": "Наполненный РЕШИМОСТЬЮ",
   "advancement.penumbra_phantasm.determination_injection.description": "Используйте инъекцию решимости. Читая этот текст, вы наполняетесь РЕШИМОСТЬЮ",
@@ -415,7 +436,7 @@
   "sound.penumbra_phantasm.fountain_seal": "Свет побеждает тьму",
   "sound.penumbra_phantasm.real_knife_slash": "Решимость рассекает воздух",
   "sound.penumbra_phantasm.real_knife_hit": "Тяжёлый урон",
-  "sound.penumbra_phantasm.level_up": "Твой УР повысился",
+  "sound.penumbra_phantasm.level_up": "Ваш УР повысился",
   "sound.penumbra_phantasm.great_shine": "ДУША появляется",
   "sound.penumbra_phantasm.soul_break": "ДУША ломается надвое",
   "sound.penumbra_phantasm.soul_shatter": "ДУША разбивается на куски",
@@ -437,7 +458,25 @@
   "tooltip.penumbra_phantasm.soul_hearth.connection_level": "СВЯЗЬ: ",
   "tooltip.penumbra_phantasm.soul_hearth.not_owner": "ДУША ВНУТРИ ОТВЕРГАЕТ ВАС.",
   "tooltip.penumbra_phantasm.rosegold_lighter_fuel": "Топливо: ",
+  "tooltip.penumbra_phantasm.saturation": "НАСЫЩЕНИЕ",
+  "tooltip.penumbra_phantasm.nutrition": "СЫТОСТЬ",
 
+  "flavor_text.penumbra_phantasm.dark_candy": "Красно-чёрная звезда, на вкус как маршмеллоу.",
+  "flavor_text.penumbra_phantasm.choco_diamond": "Хоть и маленькая, но некоторым она ОЧЕНЬ нравится",
+  "flavor_text.penumbra_phantasm.darkburger": "Таинственный чёрный бургер сделанный из... Стоп, он же просто горелый!",
+  "flavor_text.penumbra_phantasm.double_darkburger": "Это двойной тёмбургер. Его хватает на два укуса!",
+  "flavor_text.penumbra_phantasm.hearts_donut": "С червями никак не связан. Наполнен густым красным джемом.",
+  "flavor_text.penumbra_phantasm.lancer_cookie": "Печенье в форме лица Лансера. А может, и не печенье вовсе.",
+
+  "flavor_text.penumbra_phantasm.tension_bit": "Повышает ПН в битвах на 32%.",
+
+  "flavor_text.penumbra_phantasm.dark_dollar": "Кусок горелой бумаги со штампом на ней",
+  "flavor_text.penumbra_phantasm.dark_dime": "Чеканная монета, покрытая сажей. Кто-то пытался сжечь её?",
+  "flavor_text.penumbra_phantasm.dark_wallet": "Кошелёк с вашими пожитками. Сильно обожжён.",
+  "flavor_text.penumbra_phantasm.glowshard": "Блестящий осколок. Дорожает с каждой главой.",
+
+  "flavor_text.penumbra_phantasm.door_key": "Ключ от таинственной клетки. С ним что-то неладно.",
+  
   "gui.penumbra_phantasm.dark_world_inventory_title": "ИНВЕНТАРЬ",
   "gui.penumbra_phantasm.dark_world_inventory_crafting": "КРАФТ",
   "gui.penumbra_phantasm.dark_world_inventory_equipped": "СНАРЯЖ.",
@@ -468,32 +507,16 @@
   "message.penumbra_phantasm.making_fountain_not_enough_determination": "Для вонзания недостаточно РЕШИМОСТИ...",
   "message.penumbra_phantasm.making_fountain_invalid_position": "Нужно стоять на полном блоке",
   "message.penumbra_phantasm.making_fountain_not_enough_key_blocks": "Не хватает блоков для воображения...",
-  "message.penumbra_phantasm.making_fountain_inside_dark_world": "Вы чувствуете, что это плохая идея...",
-  "message.penumbra_phantasm.making_fountain_inside_depths": "...Вонзить куда?",
   "message.penumbra_phantasm.making_fountain_unsealed_or_too_big": "Комната открыта или слишком большая",
   "message.penumbra_phantasm.making_fountain_room_has_active_fountain": "Фонтан уже открыт в этой комнате",
   "message.penumbra_phantasm.making_fountain_depths_conflict": "Фонтан в этой позиции уже где-то активен...",
   "message.penumbra_phantasm.making_fountain_critical_error": "Не удалось создать фонтан из-за ошибки, пожалуйста, обратитесь к разработчику!",
-  "message.penumbra_phantasm.pushed_away_by_fountain": "Поток тьмы отталкивает вас...",
+  
   "message.penumbra_phantasm.hearth_wrong_biome": "Окружение не то... (Нужно находиться в долине песка душ)",
   "message.penumbra_phantasm.hearth_no_campfire": "Горнилу не хватает тепла. (Нужно разместить на костре душ)",
-  "message.penumbra_phantasm.soul_hearth_reject": "ДУША внутри отвергает вас.",
-  "message.penumbra_phantasm.sealing_fountain_no_fountain_nearby": "Рядом нет фонтана...",
-  "message.penumbra_phantasm.sealing_fountain_not_enough_determination": "Вы недостаточно РЕШИТЕЛЬНЫ...",
-  "message.penumbra_phantasm.sealing_fountain_already_being_sealed": "Фонтан уже запечатывается...",
-  "message.penumbra_phantasm.sealing_fountain_depths": "Ваша ДУША не может сиять сквозь тьму...",
   "message.penumbra_phantasm.dark_world_without_fountain": "В тёмном мире, в котором вы были, нет активного фонтана",
-  "message.penumbra_phantasm.great_door_cant_open_no_light_door": "Дверь не поддаётся... (Нет непривязанных дверей в комнатах с фонтаном)",
-  "message.penumbra_phantasm.great_door_cant_open_no_fountain": "Дверь не поддаётся... (У этого тёмного мира нет фонтана)",
-  "message.penumbra_phantasm.great_door_cant_open_no_fountain_destination": "Дверь не поддаётся... (У целевого тёмного мира нет фонтана)",
-  "message.penumbra_phantasm.great_door_cant_open_not_fountain_door": "Дверь не поддаётся... (Дверь в светлом мире не в оболочке фонтана)",
   "message.penumbra_phantasm.cheshire_chest_not_in_dark_world": "Крышка не поддаётся... (Сундук не в тёмном мире)",
-  "message.penumbra_phantasm.fire_door_link": "Огненная дверь была сохранена в список локаций",
-  "message.penumbra_phantasm.fire_door_unlink": "Огненная дверь была убрана из списка локаций",
-  "message.penumbra_phantasm.fire_door_limit_reached": "Достигнут лимит огненных дверей в этом тёмном мире...",
-  "message.penumbra_phantasm.fire_door_not_enough_doors": "Некуда телепортироваться...",
   "message.penumbra_phantasm.fire_door_not_in_dark_world": "Ручка не поддаётся... (Дверь не в тёмном мире)",
-  "message.penumbra_phantasm.fire_door_depths": "Ручка не поддаётся... (Нельзя использовать в Глубинах)",
 
   "death.attack.penumbra_phantasm.injection_prick": "%1$s не пережил инъекцию",
   "death.attack.penumbra_phantasm.injection_prick.player": "%1$s был заколен до смерти игроком %2$s",
@@ -558,12 +581,38 @@
   "key.penumbra_phantasm.cancel": "Отменить",
   "key.penumbra_phantasm.cancel_alt": "Отменить (Альт.)",
 
-  "textbox.penumbra_phantasm.egg.he_is_behind": "(Он за деревом.)",
-  "textbox.penumbra_phantasm.egg.it_is_a_tree": "(Это дерево.)",
-  "textbox.penumbra_phantasm.egg.man_here": "(Здесь стоит мужчина.)",
-  "textbox.penumbra_phantasm.egg.offered": "(Он вам что-то даёт.)",
-  "textbox.penumbra_phantasm.egg.no_man": "(Здесь не стоит мужчина.)",
-  "textbox.penumbra_phantasm.egg.received": "(Вы получили яйцо.)",
-  "textbox.penumbra_phantasm.egg.neednt": "(Тогда ему нет причин здесь находиться.)",
-   "textbox.penumbra_phantasm.egg.used": "(Вы использовали яйцо.)"
+  "textbox.penumbra_phantasm.making_fountain.inside_dark_world": "Вы чувствуете, что это плохая идея...",
+  "textbox.penumbra_phantasm.making_fountain.inside_depths": "...Вонзить куда?",
+
+  "textbox.penumbra_phantasm.soul_hearth.reject": "ДУША внутри отвергает вас.",
+  "textbox.penumbra_phantasm.soul_hearth.sealing_fountain.depths": "Ваша ДУША не может сиять сквозь тьму...",
+  "textbox.penumbra_phantasm.soul_hearth.sealing_fountain.not_enough_determination": "Вы недостаточно РЕШИТЕЛЬНЫ...",
+  "textbox.penumbra_phantasm.soul_hearth.sealing_fountain.already_being_sealed": "Фонтан уже запечатывается...",
+  "textbox.penumbra_phantasm.soul_hearth.sealing_fountain": "Гейзер, придающий земле форму...",
+  "textbox.penumbra_phantasm.soul_hearth.sealing_fountain.choice": "Запечатать ТЁМНЫЙ ФОНТАН?",
+  "textbox.penumbra_phantasm.soul_hearth.sealing_fountain.choice.deny": "Тьма так и продолжает литься...",
+  "textbox.penumbra_phantasm.soul_hearth.sealing_fountain.choice.confirm": "(Кажется, будто сама ваша ДУША сияет.)",
+
+  "textbox.penumbra_phantasm.dark_fountain.push_away": "Поток тьмы отталкивает вас...",
+
+  "textbox.penumbra_phantasm.great_door.no_light_door": "Дверь не поддаётся... (Нет непривязанных дверей в комнатах с фонтаном)",
+  "textbox.penumbra_phantasm.great_door.no_fountain": "Дверь не поддаётся... (У этого тёмного мира нет фонтана)",
+  "textbox.penumbra_phantasm.great_door.no_fountain_destination": "Дверь не поддаётся... (У целевого тёмного мира нет фонтана)",
+  "textbox.penumbra_phantasm.great_door.not_fountain_door": "Дверь не поддаётся... (Дверь в светлом мире не в оболочке фонтана)",
+
+  "textbox.penumbra_phantasm.fire_door.link": "Огненная дверь была сохранена в список локаций",
+  "textbox.penumbra_phantasm.fire_door.unlink": "Огненная дверь была убрана из списка локаций",
+  "textbox.penumbra_phantasm.fire_door.limit_reached": "Достигнут лимит огненных дверей в этом тёмном мире...",
+  "textbox.penumbra_phantasm.fire_door.not_enough_doors": "Некуда телепортироваться...",
+  "textbox.penumbra_phantasm.fire_door.depths": "Ручка не поддаётся... (Нельзя использовать в Глубинах)",
+
+  "textbox.penumbra_phantasm.card_kingdom_egg_room.tree_front": "(Он за деревом.)",
+  "textbox.penumbra_phantasm.card_kingdom_egg_room.tree_front.gone": "(Это дерево.)",
+  "textbox.penumbra_phantasm.card_kingdom_egg_room.tree_behind.1": "(Здесь стоит мужчина.)",
+  "textbox.penumbra_phantasm.card_kingdom_egg_room.tree_behind.2": "(Он вам что-то даёт.)",
+  "textbox.penumbra_phantasm.card_kingdom_egg_room.tree_behind.gone": "(Здесь не стоит мужчина.)",
+  "textbox.penumbra_phantasm.card_kingdom_egg_room.choice_deny": "(Тогда ему нет причин здесь находиться.)",
+  "textbox.penumbra_phantasm.egg_room.received_egg": "(Вы получили яйцо.)",
+
+  "textbox.penumbra_phantasm.use.egg": "(Вы использовали яйцо.)"
 }
