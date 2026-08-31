@@ -74,6 +74,7 @@
   "item.penumbra_phantasm.dark_candy_bucket": "Ведро из тёмно-конфетного дерева",
   "item.penumbra_phantasm.luminescent_water_bucket": "Ведро флуоресцентной воды",
   "item.penumbra_phantasm.pure_darkness_bucket": "Ведро чистой тьмы",
+  "item.penumbra_phantasm.negative_photons_bucket": "Ведро §8ОТРИЦАТЕЛЬНЫХ ФОТОНОВ§r",
 
   "item.penumbra_phantasm.egg": "Яйцо",
   
@@ -375,6 +376,7 @@
 
   "liquid.penumbra_phantasm.pure_darkness": "Чистая тьма",
   "liquid.penumbra_phantasm.luminescent_water": "Флуоресцентная вода",
+  "liquid.penumbra_phantasm.negative_photons": "§8ОТРИЦАТЕЛЬНЫЕ ФОТОНЫ§r",
   
   "itemGroup.penumbra_phantasm.main": "PENUMBRA PHANTASM",
   "itemGroup.penumbra_phantasm.card_kingdom": "КАРТОЧНОЕ КОРОЛЕВСТВО",
@@ -460,6 +462,7 @@
   "tooltip.penumbra_phantasm.rosegold_lighter_fuel": "Топливо: ",
   "tooltip.penumbra_phantasm.saturation": "НАСЫЩЕНИЕ",
   "tooltip.penumbra_phantasm.nutrition": "СЫТОСТЬ",
+  "tooltip.penumbra_phantasm.dark_wallet.total_money": "Т$",
 
   "flavor_text.penumbra_phantasm.dark_candy": "Красно-чёрная звезда, на вкус как маршмеллоу.",
   "flavor_text.penumbra_phantasm.choco_diamond": "Хоть и маленькая, но некоторым она ОЧЕНЬ нравится",
