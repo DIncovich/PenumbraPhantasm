@@ -326,7 +326,6 @@
 
   "block.penumbra_phantasm.hearth": "Горнило",
   "block.penumbra_phantasm.great_door_spawner": "Спавнер Великой двери",
-  "block.penumbra_phantasm.great_door_shape": "Великая дверь",
   "block.penumbra_phantasm.fire_door": "Огненная дверь",
   "block.penumbra_phantasm.cheshire_chest": "Сундук Чешира",
 
@@ -371,9 +370,12 @@
   "block.penumbra_phantasm.ivory_brick_button": "Кирпичная кнопка из слоновой кости",
   "block.penumbra_phantasm.ivory_brick_pressure_plate": "Кирпичная нажимная плита из слоновой кости",
 
+  "block.penumbra_phantasm.great_door_shape": "Великая дверь",
   "block.penumbra_phantasm.scarlet_log_mysterious_door": "Таинственная дверь",
   "block.penumbra_phantasm.unbreakable_darkness": "Тьма",
 
+  "block.penumbra_phantasm.titanstone": "Титанит",
+  
   "liquid.penumbra_phantasm.pure_darkness": "Чистая тьма",
   "liquid.penumbra_phantasm.luminescent_water": "Флуоресцентная вода",
   "liquid.penumbra_phantasm.negative_photons": "§8ОТРИЦАТЕЛЬНЫЕ ФОТОНЫ§r",
