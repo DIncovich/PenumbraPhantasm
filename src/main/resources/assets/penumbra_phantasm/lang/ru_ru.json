@@ -6,10 +6,13 @@
   "item.penumbra_phantasm.real_knife": "§4Настоящий нож§r",
   "item.penumbra_phantasm.black_knife": "Чёрный нож",
 
-  "item.penumbra_phantasm.dark_wallet": "Тёмный кошелёк",
-  "item.penumbra_phantasm.dark_dollar": "Тёмный доллар",
-  "item.penumbra_phantasm.dark_dime": "Тёмная десятина",
   "item.penumbra_phantasm.glowshard": "Светосколок",
+  "item.penumbra_phantasm.dark_wallet": "Тёмный кошелёк",
+  "item.penumbra_phantasm.dark_dime": "Тёмная десятина",
+  "item.penumbra_phantasm.dark_dollar": "Тёмный доллар",
+  "item.penumbra_phantasm.dark_wad": "Пачка тёмных долларов",
+  "item.penumbra_phantasm.dark_bar": "Тёмный слиток",
+  "item.penumbra_phantasm.dark_grant": "Тёмная субсидия",
   
   "item.penumbra_phantasm.dark_candy": "Тёмная конфета",
   "item.penumbra_phantasm.choco_diamond": "Шокобубна",
@@ -384,7 +387,7 @@
 
   "block.penumbra_phantasm.vantarose": "Пустотная роза",
   "block.penumbra_phantasm.potted_vantarose": "Пустотная роза в горшке",
-  "block.penumbra_phantasm.roaring_eye": "Рокочущий глаз",
+  "block.penumbra_phantasm.roaring_eye": "Рокочеглазка",
   
   "liquid.penumbra_phantasm.pure_darkness": "Чистая тьма",
   "liquid.penumbra_phantasm.luminescent_water": "Флуоресцентная вода",
@@ -497,7 +500,7 @@
   "gui.penumbra_phantasm.dark_world_inventory_equipped": "СНАРЯЖ.",
   "gui.penumbra_phantasm.cheshire_chest": "§eСУНДУК§r §dЧЕШИРА§r",
   "gui.penumbra_phantasm.umbrastone_furnace": " УМБРОВАЯ ПЕЧЬ",
-  "gui.penumbra_phantasm.dark_candy_crafting_table": "  ВЕРСТАК ИЗ Т.-К. ДЕРЕВА",
+  "gui.penumbra_phantasm.dark_candy_crafting_table": "  ТЁМНО-КОНФЕТНЫЙ ВЕРСТАК",
 
   "gui.penumbra_phantasm.textbox.yes": "Да",
   "gui.penumbra_phantasm.textbox.no": "Нет",
@@ -546,7 +549,7 @@
   "death.attack.penumbra_phantasm.injection_overdose": "%1$s был слишком РЕШИТЕЛЕН и расплавился в жижу",
   "death.attack.penumbra_phantasm.injection_overdose.player": "%1$s стал слишком РЕШИТЕЛЬНЫМ из-за игрока %2$s и расплавился в жижу",
   "death.attack.penumbra_phantasm.soul_damage": "%1$s не смог вырвать из себя ДУШУ",
-  "death.attack.penumbra_phantasm.erosion": "РЕШИМОСТЬ %1$s была раздавлена тьмой",
+  "death.attack.penumbra_phantasm.erosion": "РЕШИМОСТЬ %1$s была раздавлена ТЬМОЙ",
 
   "container.penumbra_phantasm.umbrastone_furnace": "Умбровая печь",
   "container.penumbra_phantasm.dark_world_inventory.narration.button.usage.hover": "ЛЕВЫЙ КЛИК ДЛЯ ПЕРЕКЛЮЧЕНИЯ К %s",
