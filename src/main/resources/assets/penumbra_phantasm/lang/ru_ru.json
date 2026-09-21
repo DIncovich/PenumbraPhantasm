@@ -549,7 +549,7 @@
   "death.attack.penumbra_phantasm.injection_overdose": "%1$s был слишком РЕШИТЕЛЕН и расплавился в жижу",
   "death.attack.penumbra_phantasm.injection_overdose.player": "%1$s стал слишком РЕШИТЕЛЬНЫМ из-за игрока %2$s и расплавился в жижу",
   "death.attack.penumbra_phantasm.soul_damage": "%1$s не смог вырвать из себя ДУШУ",
-  "death.attack.penumbra_phantasm.erosion": "РЕШИМОСТЬ %1$s была раздавлена ТЬМОЙ",
+  "death.attack.penumbra_phantasm.petrification": "РЕШИМОСТЬ %1$s была раздавлена ТЬМОЙ",
 
   "container.penumbra_phantasm.umbrastone_furnace": "Умбровая печь",
   "container.penumbra_phantasm.dark_world_inventory.narration.button.usage.hover": "ЛЕВЫЙ КЛИК ДЛЯ ПЕРЕКЛЮЧЕНИЯ К %s",
