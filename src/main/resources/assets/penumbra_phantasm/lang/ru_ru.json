@@ -479,6 +479,7 @@
   "tooltip.penumbra_phantasm.saturation": "НАСЫЩЕНИЕ",
   "tooltip.penumbra_phantasm.nutrition": "СЫТОСТЬ",
   "tooltip.penumbra_phantasm.dark_wallet.total_money": "Т$",
+  "tooltip.penumbra_phantasm.tension": "НАПРЯЖЕНИЕ",
 
   "flavor_text.penumbra_phantasm.dark_candy": "Красно-чёрная звезда, на вкус как маршмеллоу.",
   "flavor_text.penumbra_phantasm.choco_diamond": "Хоть и маленькая, но некоторым она ОЧЕНЬ нравится",
@@ -525,6 +526,8 @@
   "biome.penumbra_phantasm.black_shores.description": "'Мерцает, как звёздный свет, которого лишено это место...'",
   "biome.penumbra_phantasm.starless_sea": "БЕЗЗВЁЗДНОЕ МОРЕ",
   "biome.penumbra_phantasm.starless_sea.description": "'Тьма шевелится, рокот вопит...'",
+  "biome.penumbra_phantasm.blank_slate": "ЧИСТЫЙ ЛИСТ",
+  "biome.penumbra_phantasm.blank_slate.description": "'Воплотите рокот из своего воображения...'",
   
   "biome.penumbra_phantasm.egg_room_card_kingdom": "Комната с яйцом",
   
