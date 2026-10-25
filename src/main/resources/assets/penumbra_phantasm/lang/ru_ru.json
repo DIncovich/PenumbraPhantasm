@@ -65,7 +65,8 @@
   "item.penumbra_phantasm.rosegold_hoe": "Мотыга из розового золота",
 
   "item.penumbra_phantasm.rosegold_lighter": "Зажигалка из розового золота",
-
+  "item.penumbra_phantasm.great_compass": "Great Compass",
+  
   "item.penumbra_phantasm.ivory": "Слоновая кость",
 
   "item.penumbra_phantasm.ivory_sword": "Меч из слоновой кости",
@@ -635,16 +636,19 @@
 
   "textbox.penumbra_phantasm.dark_fountain.push_away": "Поток тьмы отталкивает вас...",
 
-  "textbox.penumbra_phantasm.great_door.no_light_door": "Дверь не поддаётся... (Нет непривязанных дверей в комнатах с фонтаном)",
-  "textbox.penumbra_phantasm.great_door.no_fountain": "Дверь не поддаётся... (У этого тёмного мира нет фонтана)",
-  "textbox.penumbra_phantasm.great_door.no_fountain_destination": "Дверь не поддаётся... (У целевого тёмного мира нет фонтана)",
-  "textbox.penumbra_phantasm.great_door.not_fountain_door": "Дверь не поддаётся... (Дверь в светлом мире не в оболочке фонтана)",
+  "textbox.penumbra_phantasm.great_door.no_light_door": "Дверь не поддаётся... (Нет непривязанных дверей в комнатах с фонтаном.)",
+  "textbox.penumbra_phantasm.great_door.no_fountain": "Дверь не поддаётся... (У этого тёмного мира нет фонтана.)",
+  "textbox.penumbra_phantasm.great_door.no_fountain_destination": "Дверь не поддаётся... (У целевого тёмного мира нет фонтана.)",
+  "textbox.penumbra_phantasm.great_door.not_fountain_door": "Дверь не поддаётся... (Дверь в светлом мире не в оболочке фонтана.)",
 
-  "textbox.penumbra_phantasm.fire_door.link": "Огненная дверь была сохранена в список локаций",
-  "textbox.penumbra_phantasm.fire_door.unlink": "Огненная дверь была убрана из списка локаций",
+  "textbox.penumbra_phantasm.great_compass.bound": "(Компас был привязан к этой двери.)",
+  "textbox.penumbra_phantasm.great_compass.unbound": "(Компас отвязан.)",
+  
+  "textbox.penumbra_phantasm.fire_door.link": "(Огненная дверь была сохранена в список локаций.)",
+  "textbox.penumbra_phantasm.fire_door.unlink": "(Огненная дверь была убрана из списка локаций.)",
   "textbox.penumbra_phantasm.fire_door.limit_reached": "Достигнут лимит огненных дверей в этом тёмном мире...",
-  "textbox.penumbra_phantasm.fire_door.not_enough_doors": "Некуда телепортироваться...",
-  "textbox.penumbra_phantasm.fire_door.depths": "Ручка не поддаётся... (Нельзя использовать в Глубинах)",
+  "textbox.penumbra_phantasm.fire_door.not_enough_doors": "Некуда телепортироваться... (Сохраняйте огненные двери, взаимодействуя с ними.)",
+  "textbox.penumbra_phantasm.fire_door.depths": "Ручка не поддаётся... (Нельзя использовать в Глубинах.)",
 
   "textbox.penumbra_phantasm.card_kingdom_egg_room.tree_front": "(Он за деревом.)",
   "textbox.penumbra_phantasm.card_kingdom_egg_room.tree_front.gone": "(Это дерево.)",
