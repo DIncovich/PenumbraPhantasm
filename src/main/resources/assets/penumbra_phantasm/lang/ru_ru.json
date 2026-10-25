@@ -80,6 +80,8 @@
   "item.penumbra_phantasm.negative_photons_bucket": "Ведро §8ОТРИЦАТЕЛЬНЫХ ФОТОНОВ§r",
 
   "item.penumbra_phantasm.egg": "Яйцо",
+
+  "item.penumbra_phantasm.luciramic": "Керамосвет",
   
   "block.penumbra_phantasm.twilight_grass": "Сумеречная трава",
   "block.penumbra_phantasm.twilight_grass_block": "Блок сумеречной травы",
@@ -390,8 +392,11 @@
   "block.penumbra_phantasm.potted_vantarose": "Пустотная роза в горшке",
   "block.penumbra_phantasm.roaring_eye": "Рокочеглазка",
 
+  "block.penumbra_phantasm.luciramic_wing": "Керамосветовое крыло",
   "block.penumbra_phantasm.anchor_of_light": "Якорь света",
   "block.penumbra_phantasm.anchor_of_light_part": "Часть якоря света",
+
+  "block.penumbra_phantasm.discarded_vessel": "Брошенный сосуд",
   
   "liquid.penumbra_phantasm.pure_darkness": "Чистая тьма",
   "liquid.penumbra_phantasm.luminescent_water": "Флуоресцентная вода",
